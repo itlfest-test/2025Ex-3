@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>受験生応援！学園祭ガイド</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-top">
+      <h1 class="main-title">大学生活を体験しよう！<br>🎪 学園祭 企画ナビ</h1>
+      <button id="menu-toggle" class="menu-btn" aria-label="メニュー">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <p class="subtitle">未来のキャンパスを歩いてみる「ストーリー形式」ガイド</p>
+  </header>
+
+  <section id="festival-slider-section" class="festival-slider">
+    <div class="slider-container">
+      <button class="slider-btn prev" id="sliderPrev">◀</button>
+      <div class="slider-content" id="sliderContent">
+        <h3 class="slider-title">26日開催の注目イベント</h3>
+        <p id="sliderFestivalName">読み込み中...</p>
+        <p id="sliderDates"></p>
+        <p id="sliderHighlight"></p>
+      </div>
+      <button class="slider-btn next" id="sliderNext">▶</button>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <section id="search-area" class="card">
+      <h2>🏷️ カテゴリから探す</h2>
+      <div id="tag-filters" class="tag-container">
+        </div>
+      
+      <div class="filter-group-row">
+        <div class="filter-item">
+          <label for="university">大学</label>
+          <select id="university" class="options"><option value="">指定なし</option></select>
+        </div>
+        <div class="filter-item">
+          <label for="date">日程</label>
+          <select id="date" class="options">
+            <option value="">指定なし</option>
+            <option value="2025-11-26">11月26日（追加分）</option>
+            </select>
+        </div>
+      </div>
+
+      <div class="search-actions">
+        <button id="searchBtn" class="btn primary-3d">検索する</button>
+        <button id="clearBtn" class="btn ghost">クリア</button>
+      </div>
+    </section>
+
+    <section id="results-area">
+      <h2>📋 おすすめイベント行程</h2>
+      <div id="results" class="results-grid"></div>
+      <div id="no-results" class="muted" hidden>該当する企画が見つかりませんでした。</div>
+    </section>
+
+    <section id="favorites-area" class="card hidden">
+      <h2>⭐ あなたのマイリスト</h2>
+      <p class="info-text">見たい順に並んでいます。当日のシミュレーションに！</p>
+      <div id="favorites-list"></div>
+      
+      <hr>
+      <h3>🕘 最近チェックした企画</h3>
+      <div id="fav-history"></div>
+    </section>
+
+    <section id="transit-area" class="card hidden">
+      <h2>🏃‍♂️ 企画間・教室ルート案内</h2>
+      <p class="subtitle">「あの展示のあとはどこへ行く？」教室間の移動をサポート</p>
+    
+      <div class="transit-form">
+        <div class="input-pair">
+          <label>今いる場所（教室・エリア）</label>
+          <select id="transit-departure" class="options">
+            <option value="">出発地を選択</option>
+          </select>
+        </div>
+        <div class="input-pair">
+          <label>次に行きたい場所</label>
+          <select id="transit-arrival" class="options">
+            <option value="">到着地を選択</option>
+          </select>
+        </div>
+        <button onclick="searchTransitRoute()" class="btn primary-3d full-width">最短ルートを表示</button>
+      </div>
+      <div id="transit-result"></div>
+    </section>
+
+    <section id="map-area" class="card hidden">
+      <h2>🗺️ 学内マップ（開発中）</h2>
+      <div class="map-view">
+        <img src="data/map_screenshot.png" alt="キャンパスマップのスクリーンショット" style="width:100%; border-radius:8px;">
+        <p class="caption">※地図は開発中のため、現在はイメージ画像を表示しています。</p>
+      </div>
+    </section>
+
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-view="search"><span>🔍</span><label>探す</label></button>
+    <button class="nav-btn" data-view="favorites"><span>⭐</span><label>リスト</label></button>
+    <button class="nav-btn" data-view="transit"><span>🏃‍♂️</span><label>移動</label></button>
+    <button class="nav-btn" data-view="map"><span>🗺️</span><label>マップ</label></button>
+    <button class="nav-btn" data-view="info"><span>ℹ️</span><label>情報</label></button>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+</html>
