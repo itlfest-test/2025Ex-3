@@ -651,3 +651,40 @@ async function initializeApp() {
 
 // 起動！
 initializeApp();
+
+// script.js の一番最後に追加してください
+
+/**
+ * リンク集（情報タブ）を表示する
+ */
+async function loadLinksData() {
+    try {
+        const response = await fetch('data/links.json');
+        const linksData = await response.json();
+        const container = document.getElementById('links-container');
+        
+        if (!container) return;
+
+        container.innerHTML = linksData.map(item => `
+            <div class="link-card">
+                <div class="link-card-campus">${item.university}</div>
+                <div class="link-card-title">${item.festivalName}</div>
+                <div class="link-card-festival">${item.campus}</div>
+                
+                ${item.url ? `<a href="${item.url}" target="_blank" class="link-card-url">公式サイトへ 🔗</a>` : '<p class="muted">公式サイト準備中</p>'}
+                
+                <div class="link-card-sns">
+                    ${item.sns.x ? `<a href="https://twitter.com/${item.sns.x.replace('@','')}" class="sns-link" target="_blank">𝕏</a>` : ''}
+                    ${item.sns.instagram ? `<a href="https://instagram.com/${item.sns.instagram.replace('@','')}" class="sns-link" target="_blank">Insta</a>` : ''}
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error("リンクデータの読み込みに失敗しました:", error);
+    }
+}
+
+// アプリ起動時に実行するように追加
+document.addEventListener('DOMContentLoaded', () => {
+    loadLinksData();
+});
