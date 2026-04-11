@@ -1,0 +1,574 @@
+:root {
+  --bg: #f8faff;
+  --card: #ffffff;
+  --accent: #2563eb; /* 少し鮮やかな青へ */
+  --accent-dark: #1d4ed8;
+  --accent-light: #eff6ff;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --muted: #64748b;
+  --radius: 16px; /* 角を少し丸くして親しみやすく */
+  --shadow-1: 0 4px 12px rgba(37, 99, 235, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  background: var(--bg);
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 100px);
+}
+
+/* ---------- HEADER ---------- */
+.site-header {
+  padding: 24px 16px;
+  text-align: center;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+}
+.site-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ---------- CONTAINER ---------- */
+.container {
+  max-width: 800px; /* 読みやすさのために少し絞る */
+  margin: 16px auto;
+  padding: 0 16px;
+}
+
+/* ---------- CARD ---------- */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+/* ---------- NEW: TAG FILTERS ---------- */
+/* script.jsで追加した「タグボタン」のデザイン */
+.tag-filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tag-btn {
+  border: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: white;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  color: var(--muted);
+}
+
+.tag-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
+.tag-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* ---------- RESULTS GRID ---------- */
+.results-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr; /* スマホで見やすく1列に */
+}
+
+@media(min-width: 600px) {
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---------- EVENT CARD ---------- */
+.result-card {
+  position: relative;
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  box-shadow: var(--shadow-1);
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.result-card h4 {
+  margin: 0 2rem 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.university-tag {
+  display: inline-block;
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* ---------- FAVORITE BUTTON ---------- */
+.fav-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #f1f5f9;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 1.2rem;
+}
+
+.fav-btn.active {
+  background: #fef3c7;
+  color: #f59e0b;
+  transform: scale(1.1);
+}
+
+/* ---------- タイムライン（お気に入りスケジュール用） ---------- */
+.timeline-wrapper {
+  padding: 10px 0;
+  position: relative;
+}
+
+/* 縦の線 */
+.timeline-wrapper::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e2e8f0;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.timeline-time {
+  min-width: 50px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-align: right;
+  padding-top: 12px;
+}
+
+.timeline-marker {
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 3px solid white;
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  z-index: 2;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.timeline-card {
+  flex: 1;
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-1);
+  border: 1px solid #edf2f7;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.timeline-card:active {
+  transform: scale(0.98);
+}
+
+.timeline-card h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+}
+
+.timeline-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.uni-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* ---------- 告知・スライダー関連 ---------- */
+.notice-banner {
+  background: #fff9eb;
+  border-bottom: 2px solid #fbbf24;
+  padding: 12px;
+  font-size: 0.85rem;
+  color: #92400e;
+}
+
+.slider-container {
+  background: linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%);
+  border-radius: var(--radius);
+  padding: 30px 20px;
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+}
+
+.slider-festival-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 10px 0;
+}
+
+/* ---------- MODAL（統一版） ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 24px;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* ---------- BOTTOM NAV（スマホ重要） ---------- */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 10px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid #e2e8f0;
+  z-index: 100;
+}
+
+.nav-btn {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-btn.active {
+  color: var(--accent);
+}
+
+.nav-btn .icon {
+  font-size: 1.4rem;
+}
+
+/* ---------- UTIL ---------- */
+.hidden { display: none !important; }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+
+/* ---------- リンク集（各大学・学祭への架け橋） ---------- */
+.links-list {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.link-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.link-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.05);
+  border-color: var(--accent);
+}
+
+.link-card-title {
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+}
+
+.link-card-campus {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.link-card-url {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  word-break: break-all;
+  margin-top: auto; /* 下に揃える */
+}
+
+.link-card-sns {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dotted #e2e8f0;
+}
+
+.sns-link {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.sns-link:hover {
+  color: var(--accent);
+}
+
+/* ---------- お問い合わせ（誠実さを出すデザイン） ---------- */
+.contact-info {
+  background: #f1f5f9;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.contact-message {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.contact-label {
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: #475569;
+  min-width: 80px;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.contact-value {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+/* ---------- レスポンシブの最終調整 ---------- */
+@media (max-width: 600px) {
+  .contact-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .contact-label {
+    min-width: auto;
+  }
+}
+
+/* イベントカードの説明文（2行で綺麗に揃える） */
+.event-summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.6;
+  margin: 12px 0;
+  color: #475569;
+  font-size: 0.9rem;
+  height: 3.2em; /* 1.6 × 2行 */
+}
+
+/* ページ最下部の余白（ボトムナビに被らないように） */
+.footer-spacer {
+  height: 120px;
+}
+
+/* ==========================================
+   最終調整：インタラクションと表示
+   ========================================== */
+
+/* カードのクリック感を強調 */
+.result-card, .timeline-card {
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+
+.result-card:hover, .timeline-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.1);
+  border-color: var(--accent);
+}
+
+/* スライダーのホバー設定 */
+.slider-container:hover {
+  box-shadow: 0 15px 35px rgba(37, 99, 235, 0.3);
+}
+
+/* ==========================================
+   お気に入り・マイページ専用（タイムライン外枠）
+   ========================================== */
+
+/* カレンダーグリッドの枠を、タイムラインのコンテナとして再定義 */
+.calendar-container {
+  background: white;
+  padding: 24px 16px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  min-height: 300px;
+}
+
+/* タイムラインのヘッダー（日付表示など） */
+.calendar-month-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e293b;
+  text-align: center;
+  margin-bottom: 20px;
+  display: block;
+}
+
+/* 古いカレンダーグリッドの代わりに、
+   script.jsが生成する .timeline-wrapper を調整 */
+.calendar-grid {
+  display: block; /* グリッドを解除して縦並びを許容 */
+}
+
+/* モバイルでのクリック領域を確保 */
+@media (max-width: 640px) {
+  .timeline-card {
+    padding: 12px;
+  }
+  
+  .timeline-time {
+    min-width: 45px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ==========================================
+   デバッグ・ユーティリティ
+   ========================================== */
+
+/* データ読み込み中などの表示 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--muted);
+}
+
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #e2e8f0;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 最後にフッターがナビに被らないよう余白を追加 */
+.container::after {
+  content: "";
+  display: block;
+  height: 120px;
+}
