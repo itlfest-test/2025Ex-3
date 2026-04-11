@@ -1,0 +1,42 @@
+[
+  {
+    "university": "中央大学",
+    "campus": "市谷田町キャンパス",
+    "festivalName": "iTLFest. 2025",
+    "url": "https://itlfest.com/",
+    "sns": {
+      "instagram": "@ITLFEST_2026",
+      "x": "@Festival_iTL"
+    }
+  },
+  {
+    "university": "中央大学",
+    "campus": "後楽園キャンパス",
+    "festivalName": "理工白門祭",
+    "url": "",
+    "sns": {
+      "instagram": "",
+      "x": ""
+    }
+  },
+  {
+    "university": "中央大学",
+    "campus": "茗荷谷キャンパス",
+    "festivalName": "茗荷谷祭",
+    "url": "",
+    "sns": {
+      "instagram": "",
+      "x": ""
+    }
+  },
+  {
+    "university": "中央大学",
+    "campus": "多摩キャンパス",
+    "festivalName": "白門祭",
+    "url": "",
+    "sns": {
+      "instagram": "",
+      "x": ""
+    }
+  }
+]
