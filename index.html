@@ -8,7 +8,6 @@
 </head>
 <body>
 
-  <!-- 試作告知バー -->
   <div class="notice-banner">
     <div class="notice-content">
       <span class="notice-icon">⚠️</span>
@@ -19,13 +18,11 @@
     </div>
   </div>
 
-  <!-- ヘッダー -->
   <header class="site-header">
     <h1>🎪 学祭イベント検索</h1>
     <p class="subtitle">複数大学の学園祭情報をまとめて検索</p>
   </header>
 
-  <!-- 学祭情報スライダー -->
   <section id="festival-slider-section" class="festival-slider">
     <div class="slider-container">
       <button class="slider-btn prev" id="sliderPrev" aria-label="前へ">◀</button>
@@ -43,37 +40,26 @@
 
   <div class="container">
 
-    <!-- 検索エリア -->
     <section id="search-area" class="card">
       <h2>🔍 企画を探す</h2>
-
       <div class="filter-group">
         <label class="filter-title" for="university">大学
           <button class="info-btn" data-type="university" aria-label="大学の説明">?</button>
         </label>
-        <select id="university" class="options">
-          <option value="">指定なし</option>
-        </select>
+        <select id="university" class="options"><option value="">指定なし</option></select>
       </div>
-
       <div class="filter-group">
         <label class="filter-title" for="category">カテゴリ
           <button class="info-btn" data-type="category" aria-label="カテゴリの説明">?</button>
         </label>
-        <select id="category" class="options">
-          <option value="">指定なし</option>
-        </select>
+        <select id="category" class="options"><option value="">指定なし</option></select>
       </div>
-
       <div class="filter-group">
         <label class="filter-title" for="field">分野
           <button class="info-btn" data-type="field" aria-label="分野の説明">?</button>
         </label>
-        <select id="field" class="options">
-          <option value="">指定なし</option>
-        </select>
+        <select id="field" class="options"><option value="">指定なし</option></select>
       </div>
-
       <div class="filter-group">
         <label class="filter-title" for="date">開催日
           <button class="info-btn" data-type="date" aria-label="開催日の説明">?</button>
@@ -88,93 +74,100 @@
           <option value="2025-11-23">11月23日（日）</option>
         </select>
       </div>
-
       <div style="display:flex;gap:8px;margin-top:12px;">
         <button id="searchBtn" class="btn primary-3d" style="flex:1;">検索</button>
         <button id="clearBtn" class="btn ghost">クリア</button>
       </div>
     </section>
 
-    <!-- 検索結果エリア -->
     <section id="results-area">
       <h2 id="results-title">📋 検索結果 <span id="filter-status" class="filter-status">(全体)</span></h2>
       <div id="results" class="results-grid"></div>
       <div id="no-results" class="muted" hidden>該当する企画が見つかりませんでした。</div>
     </section>
 
-    <!-- お気に入りエリア -->
     <section id="favorites-area" class="card hidden">
       <h2>⭐ お気に入り</h2>
-      
-      <!-- カレンダー表示部分 -->
-      <div class="calendar-container" style="margin-bottom: 24px;">
-        <div class="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-          <button id="calendar-prev-month" class="btn ghost" style="padding: 8px 16px;">← 前月</button>
-          <h3 id="calendar-month-title" style="margin: 0;">2025年10月</h3>
-          <button id="calendar-next-month" class="btn ghost" style="padding: 8px 16px;">次月 →</button>
-        </div>
-        <div id="calendar-grid" class="calendar-grid"></div>
+      <div id="favorites-table-wrap">
+        <table class="fav-table">
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>時間</th>
+              <th>企画名</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="favorites-table-body">
+            <tr><td colspan="4" class="muted" style="padding:16px;text-align:center;">お気に入りはまだありません。</td></tr>
+          </tbody>
+        </table>
       </div>
-      
-      <hr style="margin: 24px 0;">
-      
-      <h3>⭐ お気に入り一覧</h3>
-      <div id="favorites-list"></div>
       <hr style="margin:1.5rem 0;">
       <h3>🕘 履歴</h3>
       <div id="fav-history"></div>
     </section>
 
-    <!-- 教室案内エリア -->
-    <div id="transit-area" class="hidden">
+    <section id="room-guide-area" class="card hidden">
       <h2>🏫 教室案内</h2>
-    
-      <div style="background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-          <div>
-            <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px;">出発地</label>
-            <select id="transit-departure" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-              <option value="">出発地を選択してください</option>
-            </select>
-          </div>
-          <div>
-            <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px;">到着地</label>
-            <select id="transit-arrival" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-              <option value="">到着地を選択してください</option>
-            </select>
+      <div class="room-guide-form">
+        <div class="room-guide-fixed">
+          <span class="room-guide-label">出発地</span>
+          <div class="room-guide-origin">📍 キャンパス入口（正門）</div>
+        </div>
+        <div class="room-guide-arrow">↓</div>
+        <div class="room-guide-selects">
+          <span class="room-guide-label">到着地</span>
+          <select id="room-campus" class="options" style="margin-bottom:8px;">
+            <option value="">キャンパスを選択</option>
+          </select>
+          <select id="room-building" class="options" style="margin-bottom:8px;" disabled>
+            <option value="">建物を選択</option>
+          </select>
+          <select id="room-room" class="options" disabled>
+            <option value="">教室を選択</option>
+          </select>
+        </div>
+        <button id="room-guide-btn" class="btn primary-3d" style="margin-top:12px;width:100%;">案内を見る</button>
+      </div>
+      <div id="room-guide-result" class="hidden" style="margin-top:20px;">
+        <div class="room-result-card">
+          <div class="room-result-title" id="room-result-title"></div>
+          <div class="room-result-desc" id="room-result-desc"></div>
+          <div class="room-map-placeholder" id="room-map-placeholder">
+            <p>🗺️ フロアマップ</p>
+            <p style="font-size:0.85em;color:#9ca3af;">準備中</p>
           </div>
         </div>
-      
-        <button onclick="searchTransitRoute()" style="width: 100%; background: #2563eb; color: white; padding: 12px; border: none; border-radius: 4px; font-weight: 500; cursor: pointer;">
-          ルートを検索
-        </button>
-      </div>
-
-      <div id="transit-result"></div>
-    </div>
-
-    <!-- マップエリア -->
-    <section id="map-area" class="card hidden">
-      <h2>🗺️ キャンパスマップ</h2>
-      <div class="map-placeholder" style="text-align: center; padding: 60px 20px; background: #f9fafb; border-radius: 8px; color: #6b7280;">
-        <p style="font-size: 1.2em; margin-bottom: 8px;">🗺️</p>
-        <p style="font-size: 0.9em; margin-top: 8px;">近日公開予定</p>
       </div>
     </section>
 
-    <!-- 情報エリア -->
+    <section id="story-area" class="card hidden">
+      <h2>📹 ストーリー</h2>
+      <div id="story-list" class="story-grid"></div>
+      <div id="story-empty" style="text-align:center;padding:40px 20px;color:#9ca3af;">
+        <p style="font-size:1.4em;">🎬</p>
+        <p>動画を準備中です</p>
+        <p style="font-size:0.85em;margin-top:4px;">近日公開予定</p>
+      </div>
+    </section>
+
+    <section id="map-area" class="card hidden">
+      <h2>🗺️ キャンパスマップ</h2>
+      <div style="text-align:center;padding:60px 20px;background:#f9fafb;border-radius:8px;color:#6b7280;">
+        <p style="font-size:1.2em;margin-bottom:8px;">🗺️</p>
+        <p>マップ機能は準備中です</p>
+        <p style="font-size:0.9em;margin-top:8px;">近日公開予定</p>
+      </div>
+    </section>
+
     <section id="info-area" class="card hidden">
       <h2>ℹ️ 情報</h2>
-      
-      <!-- リンク集 -->
       <div class="info-section">
         <h3>🔗 協力大学 学祭公式サイト</h3>
         <div id="links-list" class="links-list"></div>
       </div>
-
       <hr style="margin:2rem 0;">
-
-      <!-- 問い合わせ先 -->
       <div class="info-section">
         <h3>📧 お問い合わせ</h3>
         <div id="contact-info" class="contact-info"></div>
@@ -183,7 +176,6 @@
 
   </div>
 
-  <!-- ボトムナビ -->
   <nav class="bottom-nav">
     <button class="nav-btn active" data-view="search">
       <span class="nav-icon">🔍</span>
@@ -193,9 +185,13 @@
       <span class="nav-icon">⭐</span>
       <span class="nav-label">お気に入り</span>
     </button>
-    <button class="nav-btn" data-view="transit">
+    <button class="nav-btn" data-view="room-guide">
       <span class="nav-icon">🏫</span>
       <span class="nav-label">教室案内</span>
+    </button>
+    <button class="nav-btn" data-view="story">
+      <span class="nav-icon">📹</span>
+      <span class="nav-label">ストーリー</span>
     </button>
     <button class="nav-btn" data-view="map">
       <span class="nav-icon">🗺️</span>
@@ -206,27 +202,21 @@
       <span class="nav-label">情報</span>
     </button>
   </nav>
-  
-  <!-- 初回モーダル -->
+
   <div id="introModal" class="modal hidden">
     <div class="modal-content">
       <button id="introClose" class="modal-close">✕</button>
       <h2>🎪 学祭イベント検索へようこそ！</h2>
-      <p>
-        複数の大学の学園祭情報を一度に検索できます。<br>
-        お気に入り登録で気になる企画をまとめておけます。
-      </p>
+      <p>複数の大学の学園祭情報を一度に検索できます。<br>お気に入り登録で気になる企画をまとめておけます。</p>
       <div class="modal-actions">
         <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;">
-          <input type="checkbox" id="dontShow">
-          <span>次回から表示しない</span>
+          <input type="checkbox" id="dontShow"><span>次回から表示しない</span>
         </label>
         <button id="introOk" class="btn primary-3d">OK</button>
       </div>
     </div>
   </div>
 
-  <!-- 説明モーダル -->
   <div id="descModal" class="modal hidden">
     <div class="modal-content">
       <button id="descClose" class="modal-close">✕</button>
@@ -238,8 +228,6 @@
     </div>
   </div>
 
-  <!-- スクリプト読み込み（JSON対応版） -->
   <script src="script.js"></script>
-
 </body>
 </html>
