@@ -2,7 +2,7 @@
 *{box-sizing:border-box;}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji","Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",Roboto,sans-serif;background:linear-gradient(180deg,#f9fbff 0%,var(--bg) 100%);color:#111827;-webkit-font-smoothing:antialiased;padding-bottom:calc(env(safe-area-inset-bottom) + 90px);}
 
-/* ヘッダー：タイトル大きく */
+/* ヘッダー */
 .site-header{padding:18px 16px;text-align:center;}
 .site-header h1{margin:0;font-size:2rem;font-weight:800;letter-spacing:-0.02em;}
 .subtitle{margin:6px 0 0;color:var(--muted);font-size:0.95rem;}
@@ -12,9 +12,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
 .filter-group{margin:10px 0;}
 .filter-title{display:block;font-weight:600;margin-bottom:6px;}
 
-/* ============================
-   Choice Chips
-============================ */
+/* Choice Chips */
 .chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
 .chip-btn{
   border:1.5px solid #d0d7e1;
@@ -28,6 +26,9 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
   transition:all .15s ease;
   line-height:1.4;
   white-space:nowrap;
+  /* タップ領域を確保 */
+  min-height:36px;
+  touch-action:manipulation;
 }
 .chip-btn:hover{border-color:#1976d2;color:#1976d2;background:#eff6ff;}
 .chip-btn.active{
@@ -36,80 +37,66 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
   border-color:transparent;
   box-shadow:0 4px 10px rgba(20,94,168,0.18);
 }
-/* カテゴリ色チップ */
 .chip-btn.chip-colored{
-  background:var(--chip-bg, #f3f4f6);
-  border-color:var(--chip-border, #d0d7e1);
-  color:var(--chip-color, #374151);
+  background:var(--chip-bg,#f3f4f6);
+  border-color:var(--chip-border,#d0d7e1);
+  color:var(--chip-color,#374151);
 }
 .chip-btn.chip-colored.active{
-  background:var(--chip-border, var(--accent));
+  background:var(--chip-border,var(--accent));
   color:#fff;
   border-color:transparent;
 }
 
-/* カテゴリタグ（カード内） */
-.category-tag{
-  display:inline-block;
-  padding:2px 10px;
-  border-radius:999px;
-  font-size:0.78rem;
-  font-weight:600;
-  margin-right:4px;
-}
-.university-tag{
-  display:inline-block;
-  background:#dbeafe;
-  color:#1e40af;
-  padding:2px 8px;
-  border-radius:999px;
-  font-size:0.78rem;
-  font-weight:600;
-  margin-right:4px;
-}
-.field-tag{
-  display:inline-block;
-  background:#e0e7ff;
-  color:#4338ca;
-  padding:2px 8px;
-  border-radius:999px;
-  font-size:0.78rem;
-  font-weight:600;
-  margin-right:4px;
-}
+/* カード内タグ */
+.category-tag{display:inline-block;padding:2px 10px;border-radius:999px;font-size:0.78rem;font-weight:600;margin-right:4px;}
+.university-tag{display:inline-block;background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:999px;font-size:0.78rem;font-weight:600;margin-right:4px;}
+.field-tag{display:inline-block;background:#e0e7ff;color:#4338ca;padding:2px 8px;border-radius:999px;font-size:0.78rem;font-weight:600;margin-right:4px;}
 
-.option-btn{border:none;padding:8px 12px;border-radius:999px;cursor:pointer;background:linear-gradient(180deg,#ffffff,#f1f5ff);box-shadow:0 4px 0 rgba(0,0,0,0.06),inset 0 -2px 0 rgba(0,0,0,0.02);transition:transform .12s ease,background .12s ease;font-size:0.95rem;}
-.option-btn:hover{transform:translateY(-2px);}
-.option-btn.active{background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:white;transform:translateY(-1px);box-shadow:0 6px 14px rgba(20,94,168,0.16);}
-.btn{border-radius:10px;padding:10px 14px;font-weight:600;border:1px solid rgba(16,24,40,0.06);background:#fff;cursor:pointer;}
+.btn{border-radius:10px;padding:10px 14px;font-weight:600;border:1px solid rgba(16,24,40,0.06);background:#fff;cursor:pointer;touch-action:manipulation;}
 .btn.ghost{background:transparent;}
 .btn.primary-3d{background:linear-gradient(180deg,var(--accent),var(--accent-dark));color:#fff;box-shadow:0 8px 0 rgba(20,94,168,0.12),0 12px 28px rgba(20,94,168,0.08);border:none;transition:transform .08s cubic-bezier(.2,.9,.3,1),box-shadow .08s;}
 .btn.primary-3d:active{transform:translateY(3px);box-shadow:0 4px 0 rgba(20,94,168,0.08);}
+
 .results-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-top:12px;}
 .result-card{position:relative;background:white;border-radius:12px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;border-left:4px solid #e5e7eb;}
 .result-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.12);transform:translateY(-2px);}
 .result-card h4{margin:0 2.5rem 0.5rem 0;font-size:1.1rem;color:#333;}
 .result-card .muted{color:#666;font-size:0.9rem;margin:0.5rem 0;line-height:1.5;}
 .result-card .card-meta{margin-top:1rem;padding-top:0.75rem;border-top:1px solid rgba(0,0,0,0.06);font-size:0.85rem;color:#888;line-height:2;}
-.fav-btn{position:absolute;top:0.75rem;right:0.75rem;background:transparent;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem;line-height:1;transition:all 0.2s ease;filter:grayscale(100%) brightness(0.7);opacity:0.5;}
+.fav-btn{position:absolute;top:0.75rem;right:0.75rem;background:transparent;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem;line-height:1;transition:all 0.2s ease;filter:grayscale(100%) brightness(0.7);opacity:0.5;touch-action:manipulation;}
 .fav-btn:hover{transform:scale(1.2);filter:grayscale(100%) brightness(0.9);opacity:0.8;}
 .fav-btn.active{filter:grayscale(0%) brightness(1.1);opacity:1;animation:favPulse 0.3s ease;}
 @keyframes favPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.3);}}
 
 /* ============================
-   ボトムナビ（PC: 表示 / スマホ: 非表示）
+   ボトムナビ（PC・タブレット: 601px以上）
 ============================ */
-.bottom-nav{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 14px);left:0;width:100%;display:flex;justify-content:center;gap:6px;z-index:80;padding:0 8px;}
-.nav-btn{border:none;background:linear-gradient(180deg,#fff,#f8fbff);padding:8px 10px;border-radius:14px;box-shadow:0 10px 20px rgba(9,30,66,0.06);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:700;min-width:0;flex:1;max-width:80px;}
+.bottom-nav{
+  position:fixed;bottom:calc(env(safe-area-inset-bottom) + 14px);
+  left:0;width:100%;
+  display:flex;justify-content:center;gap:6px;
+  z-index:80;padding:0 8px;
+}
+.nav-btn{
+  border:none;
+  background:linear-gradient(180deg,#fff,#f8fbff);
+  padding:8px 10px;border-radius:14px;
+  box-shadow:0 10px 20px rgba(9,30,66,0.06);
+  cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;gap:2px;font-weight:700;
+  min-width:0;flex:1;max-width:80px;
+  touch-action:manipulation;
+}
 .nav-btn .nav-icon{font-size:1.2rem;line-height:1;}
 .nav-btn .nav-label{font-size:0.68rem;line-height:1;white-space:nowrap;}
 .nav-btn.active{background:linear-gradient(180deg,#eaf4ff,var(--card));border:1px solid rgba(25,118,210,0.08);}
 
 /* ============================
-   ハンバーガーメニュー（スマホ専用）
+   ハンバーガー（スマホ: 600px以下）
 ============================ */
 .hamburger-toggle{
-  display:none;
+  display:none; /* JSでなくCSSで制御 */
   position:fixed;
   bottom:calc(env(safe-area-inset-bottom) + 16px);
   right:16px;
@@ -125,21 +112,27 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
   justify-content:center;
   gap:5px;
   padding:0;
+  touch-action:manipulation;
 }
 .hamburger-toggle span{
   display:block;width:22px;height:2.5px;
   background:#fff;border-radius:2px;
-  transition:all .25s ease;
 }
+
+/* オーバーレイ: 常にDOMにあるがpointer-eventsで制御 */
 .hamburger-overlay{
-  display:none;
   position:fixed;inset:0;
   background:rgba(0,0,0,0.4);
   z-index:85;
   opacity:0;
+  pointer-events:none;
   transition:opacity .25s;
+  /* スマホ以外では完全に無効 */
+  display:none;
 }
-.hamburger-overlay.open{opacity:1;}
+.hamburger-overlay.open{opacity:1;pointer-events:auto;}
+
+/* スライドアップメニュー */
 .hamburger-menu{
   display:none;
   position:fixed;
@@ -151,32 +144,29 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
   padding:8px 12px calc(env(safe-area-inset-bottom) + 12px);
   transform:translateY(100%);
   transition:transform .3s cubic-bezier(.2,.9,.3,1);
+  /* コンテンツのタッチを妨げないようにpointer-eventsを閉じているとき無効化 */
+  pointer-events:none;
 }
-.hamburger-menu.open{transform:translateY(0);}
+.hamburger-menu.open{transform:translateY(0);pointer-events:auto;}
 .hamburger-menu-inner{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.hamburger-menu .nav-btn{
-  max-width:none;padding:12px 8px;border-radius:12px;
-  background:linear-gradient(180deg,#f9fbff,#fff);
-  box-shadow:0 2px 8px rgba(9,30,66,0.06);
-}
+.hamburger-menu .nav-btn{max-width:none;padding:12px 8px;border-radius:12px;background:linear-gradient(180deg,#f9fbff,#fff);box-shadow:0 2px 8px rgba(9,30,66,0.06);}
 .hamburger-menu .nav-btn .nav-icon{font-size:1.4rem;}
 .hamburger-menu .nav-btn .nav-label{font-size:0.72rem;}
 
-/* ============================
-   スマホ: ハンバーガーを表示、ボトムナビを非表示
-============================ */
+/* スマホ: ハンバーガー表示、ボトムナビ非表示 */
 @media(max-width:600px){
-  .bottom-nav{display:none;}
+  .bottom-nav{display:none !important;}
   .hamburger-toggle{display:flex;}
   .hamburger-overlay{display:block;}
   .hamburger-menu{display:block;}
   body{padding-bottom:calc(env(safe-area-inset-bottom) + 20px);}
 }
 
+/* 履歴 */
 .history-list{display:flex;flex-direction:column;gap:8px;margin-top:6px;}
 .history-item{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;background:#fff;border:1px solid rgba(9,30,66,0.03);}
 
-/* お気に入り時系列テーブル */
+/* お気に入りテーブル */
 .fav-table-wrap{overflow-x:auto;border-radius:10px;border:1px solid #e5e7eb;margin-bottom:8px;}
 .fav-table{width:100%;border-collapse:collapse;font-size:0.9rem;}
 .fav-table thead tr{background:#f3f4f6;}
@@ -184,17 +174,13 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
 .fav-table tbody tr{border-bottom:1px solid #f3f4f6;transition:background 0.15s;}
 .fav-table tbody tr:last-child{border-bottom:none;}
 .fav-table tbody tr:hover{background:#f9fafb;}
-.fav-td-date{padding:10px 12px;white-space:nowrap;color:var(--muted);font-size:0.85rem;min-width:80px;}
-.fav-td-time{padding:10px 8px;white-space:nowrap;color:#374151;font-size:0.85rem;min-width:80px;}
-.fav-td-name{padding:10px 8px;width:100%;}
-.fav-event-link{color:var(--accent);text-decoration:none;font-weight:600;display:block;line-height:1.4;}
-.fav-event-link:hover{text-decoration:underline;}
-.fav-event-uni{font-size:0.8rem;color:var(--muted);margin-top:2px;}
-.fav-td-btn{padding:6px 8px;text-align:center;}
+.fav-table-date{padding:10px 12px;white-space:nowrap;color:var(--muted);font-size:0.85rem;min-width:80px;}
+.fav-table-time{padding:10px 8px;white-space:nowrap;color:#374151;font-size:0.85rem;min-width:60px;}
+.fav-table-name{padding:10px 8px;width:100%;}
+.fav-table-link{color:var(--accent);text-decoration:none;font-weight:600;display:block;line-height:1.4;}
+.fav-table-link:hover{text-decoration:underline;}
+.fav-table-uni{font-size:0.8rem;color:var(--muted);margin-top:2px;}
 .fav-table .fav-btn{position:static;font-size:1.2rem;}
-.fav-table-empty{text-align:center;padding:24px;color:var(--muted);}
-
-.map-placeholder{min-height:220px;display:flex;align-items:center;justify-content:center;color:var(--muted);background:linear-gradient(180deg,#f7fbff,#ffffff);border-radius:8px;padding:16px;text-align:center;}
 
 /* モーダル */
 .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.45);z-index:200;overflow:hidden;}
@@ -206,7 +192,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
 .hidden{display:none !important;}
 .muted{color:var(--muted);text-align:center;padding:10px;}
 
-/* 試作告知バー */
+/* 告知バー */
 .notice-banner{background:linear-gradient(135deg,#fff3cd 0%,#fff8e1 100%);border-bottom:2px solid #ffc107;padding:12px 16px;box-shadow:0 2px 8px rgba(255,193,7,0.15);}
 .notice-content{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;}
 .notice-icon{font-size:1.5rem;flex-shrink:0;}
@@ -216,7 +202,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
 /* スライダー */
 .festival-slider{max-width:1100px;margin:0 auto 1rem;padding:0 16px;}
 .slider-container{position:relative;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:16px;padding:2rem 3rem;box-shadow:0 10px 30px rgba(102,126,234,0.3);color:white;min-height:200px;display:flex;align-items:center;gap:1rem;}
-.slider-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.9);border:none;width:40px;height:40px;border-radius:50%;font-size:1.2rem;cursor:pointer;transition:all 0.2s ease;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:10;}
+.slider-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.9);border:none;width:40px;height:40px;border-radius:50%;font-size:1.2rem;cursor:pointer;transition:all 0.2s ease;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:10;touch-action:manipulation;}
 .slider-btn:hover{background:white;transform:translateY(-50%) scale(1.1);}
 .slider-btn.prev{left:0.5rem;}.slider-btn.next{right:0.5rem;}
 .slider-content{flex:1;text-align:center;animation:fadeIn 0.5s ease;}
@@ -233,13 +219,13 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
 .festival-slider-card:hover{transform:scale(1.02);}
 
 /* 情報ボタン */
-.info-btn{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;font-size:0.75rem;font-weight:bold;cursor:pointer;margin-left:6px;transition:all 0.2s ease;box-shadow:0 2px 6px rgba(102,126,234,0.3);}
+.info-btn{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;font-size:0.75rem;font-weight:bold;cursor:pointer;margin-left:6px;transition:all 0.2s ease;box-shadow:0 2px 6px rgba(102,126,234,0.3);touch-action:manipulation;}
 .info-btn:hover{transform:scale(1.2);box-shadow:0 4px 12px rgba(102,126,234,0.5);}
 #descModal .modal-content{max-width:500px;}
 #descTitle{color:#667eea;margin:0 0 1rem;font-size:1.3rem;}
 #descText{line-height:1.8;color:#4a5568;}
 
-/* リンク集 */
+/* リンク・問い合わせ */
 .info-section{margin-bottom:2rem;}
 .info-section h3{margin:0 0 1rem;color:#2d3748;font-size:1.2rem;border-bottom:2px solid #667eea;padding-bottom:0.5rem;}
 .links-list{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
@@ -264,29 +250,27 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
 .event-summary{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;line-height:1.7em;max-height:3.4em;min-height:3.4em;}
 
 /* 教室案内 */
-.room-desc{color:var(--muted);font-size:0.9rem;margin:0 0 16px;}
-.room-selects{display:flex;flex-direction:column;gap:0;}
-.room-from{background:#eaf4ff;border-radius:8px;padding:10px 14px;font-size:0.9rem;color:#1e40af;margin-bottom:14px;}
-.room-cards{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
-.room-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px;}
-.room-card-name{font-weight:700;color:#1e3a8a;margin-bottom:4px;font-size:0.95rem;}
-.room-card-event{font-size:0.88rem;color:#374151;margin-bottom:4px;}
-.room-card-note{font-size:0.82rem;color:var(--muted);}
-.room-preparing{text-align:center;color:var(--muted);padding:20px;font-size:0.9rem;line-height:1.8;}
+select.options{width:100%;padding:10px;border-radius:10px;border:1px solid #d0d7e1;background:#fff;font-size:0.95rem;appearance:none;}
+.room-result-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:16px;}
+.room-result-title{font-weight:700;color:#1e3a8a;margin-bottom:8px;font-size:1rem;}
+.room-result-desc{color:#374151;line-height:1.7;margin-bottom:12px;}
+.room-map-placeholder{background:#f3f4f6;border-radius:8px;padding:20px;text-align:center;color:#9ca3af;}
+.room-guide-form{display:flex;flex-direction:column;gap:8px;}
+.room-guide-fixed{background:#eaf4ff;border-radius:8px;padding:10px 14px;font-size:0.9rem;color:#1e40af;}
+.room-guide-label{font-weight:600;font-size:0.85rem;color:var(--muted);display:block;margin-bottom:4px;}
+.room-guide-origin{font-weight:600;color:#1e40af;}
+.room-guide-arrow{text-align:center;font-size:1.2rem;color:var(--muted);}
+.room-guide-selects{display:flex;flex-direction:column;gap:8px;}
 
 /* ストーリー */
 .story-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin-top:8px;}
-.story-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;}
-.story-tag{display:inline-block;background:#dbeafe;color:#1e40af;font-size:0.75rem;font-weight:700;padding:2px 8px;border-radius:999px;width:fit-content;}
-.story-date{font-size:0.8rem;color:var(--muted);}
+.story-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;}
+.story-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.1);}
 .story-title{font-weight:700;font-size:0.95rem;color:#111827;}
-.story-video-wrap{position:relative;width:100%;padding-top:56.25%;border-radius:8px;overflow:hidden;background:#000;}
-.story-video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
-.story-link{display:inline-block;background:var(--accent);color:white;text-decoration:none;padding:8px 16px;border-radius:8px;font-size:0.9rem;font-weight:600;text-align:center;transition:background 0.2s;}
-.story-link:hover{background:var(--accent-dark);}
-
-/* select (教室案内などで使う) */
-select.options{width:100%;padding:10px;border-radius:10px;border:1px solid #d0d7e1;background:#fff;font-size:0.95rem;appearance:none;}
+.story-desc{font-size:0.85rem;color:var(--muted);line-height:1.6;}
+.story-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;}
+.story-thumb-placeholder{background:#e5e7eb;border-radius:8px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#9ca3af;}
+.story-info{display:flex;flex-direction:column;gap:4px;}
 
 /* レスポンシブ */
 @media(max-width:720px){
@@ -299,7 +283,6 @@ select.options{width:100%;padding:10px;border-radius:10px;border:1px solid #d0d7
   .links-list{grid-template-columns:1fr;}
   .slider-btn{width:36px;height:36px;font-size:1rem;}
   .story-grid{grid-template-columns:1fr;}
-  .room-cards{grid-template-columns:1fr;}
   .notice-banner{padding:10px 12px;}
   .notice-icon{font-size:1.2rem;}
   .notice-text{font-size:0.85rem;}
@@ -314,6 +297,7 @@ select.options{width:100%;padding:10px;border-radius:10px;border:1px solid #d0d7
   .slider-message{font-size:0.8rem;}
   .contact-item{flex-direction:column;align-items:flex-start;gap:0.5rem;}
   .contact-label{min-width:auto;}
+  .chip-btn{font-size:0.82rem;padding:5px 11px;}
 }
 @media(max-width:360px){.modal-content{padding:1.2rem 1rem;}.modal-content p{font-size:0.88rem;}}
 @media(min-width:768px){.modal-content{max-width:550px;padding:2rem 2rem;}.modal-content p{font-size:1rem;}}
