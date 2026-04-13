@@ -14,24 +14,26 @@ let contactData   = null;
 
 // カテゴリ色定義
 const CATEGORY_COLORS = {
-  "エンタメ・お笑い":   { bg: "rgba(254,240,138,0.35)", border: "#fbbf24", tag: "#92400e" },
-  "音楽・パフォーマンス": { bg: "rgba(196,181,253,0.35)", border: "#8b5cf6", tag: "#5b21b6" },
-  "展示・作品":         { bg: "rgba(167,243,208,0.35)", border: "#34d399", tag: "#065f46" },
-  "体験・参加":         { bg: "rgba(252,165,165,0.35)", border: "#f87171", tag: "#991b1b" },
-  "講演・トーク":       { bg: "rgba(147,197,253,0.35)", border: "#60a5fa", tag: "#1e40af" },
-  "飲食":               { bg: "rgba(253,186,116,0.35)", border: "#fb923c", tag: "#9a3412" },
-  "スポーツ":           { bg: "rgba(110,231,183,0.35)", border: "#10b981", tag: "#064e3b" },
-  "その他":             { bg: "rgba(209,213,219,0.35)", border: "#9ca3af", tag: "#374151" },
+  "エンタメ・お笑い":                 { bg: "rgba(254,240,138,0.35)", border: "#fbbf24", tag: "#92400e" },
+  "音楽・パフォーマンス":             { bg: "rgba(196,181,253,0.35)", border: "#8b5cf6", tag: "#5b21b6" },
+  "展示・発表":                       { bg: "rgba(167,243,208,0.35)", border: "#34d399", tag: "#065f46" },
+  "体験・実験（理工系）":             { bg: "rgba(252,165,165,0.35)", border: "#f87171", tag: "#991b1b" },
+  "体験・実験":                       { bg: "rgba(252,165,165,0.35)", border: "#f87171", tag: "#991b1b" },
+  "講演・セミナー":                   { bg: "rgba(147,197,253,0.35)", border: "#60a5fa", tag: "#1e40af" },
+  "飲食":                             { bg: "rgba(253,186,116,0.35)", border: "#fb923c", tag: "#9a3412" },
+  "物販":                             { bg: "rgba(253,186,116,0.25)", border: "#f59e0b", tag: "#78350f" },
+  "ダンス系":                         { bg: "rgba(249,168,212,0.35)", border: "#f472b6", tag: "#9d174d" },
+  "コスプレ・ファッション系":         { bg: "rgba(249,168,212,0.25)", border: "#ec4899", tag: "#831843" },
+  "アトラクション・ゲーム（参加型）": { bg: "rgba(110,231,183,0.35)", border: "#10b981", tag: "#064e3b" },
+  "相談・ワークショップ系":           { bg: "rgba(165,180,252,0.35)", border: "#818cf8", tag: "#3730a3" },
+  "その他":                           { bg: "rgba(209,213,219,0.35)", border: "#9ca3af", tag: "#374151" },
 };
 
 function getCategoryColor(category) {
+  if (!category) return CATEGORY_COLORS["その他"];
+  if (CATEGORY_COLORS[category]) return CATEGORY_COLORS[category];
   for (const key of Object.keys(CATEGORY_COLORS)) {
-    if (category && category.includes(key.split("・")[0])) return CATEGORY_COLORS[key];
-    if (category === key) return CATEGORY_COLORS[key];
-  }
-  // 部分一致
-  for (const key of Object.keys(CATEGORY_COLORS)) {
-    if (category && (category.includes(key) || key.includes(category))) return CATEGORY_COLORS[key];
+    if (category.includes(key) || key.includes(category)) return CATEGORY_COLORS[key];
   }
   return CATEGORY_COLORS["その他"];
 }
@@ -66,7 +68,6 @@ function evField(ev)         { return ev.field || ev["分野"] || ""; }
 function evDescription(ev)   { return ev.description || ev["説明"] || ""; }
 function evStartDateTime(ev) { return ev.startDatetime || ev.start_datetime || ev["start_datetime"] || ""; }
 function evEndDateTime(ev)   { return ev.endDatetime   || ev.end_datetime   || ev["end_datetime"]   || ""; }
-function evPlace(ev)         { return ev.location || ev["場所"] || ""; }
 
 function escapeHtml(str) {
   if (!str && str !== 0) return "";
@@ -114,6 +115,7 @@ function setupFestivalSlider() {
   festivalsData.forEach((_, i) => {
     const dot = document.createElement("button");
     dot.className = "slider-dot";
+    dot.type = "button";
     if (i === 0) dot.classList.add("active");
     dot.addEventListener("click", () => goToSlide(i));
     dotsContainer.appendChild(dot);
@@ -133,10 +135,10 @@ function goToSlide(i) { currentSlide = i; updateSlide(); }
 function updateSlide() {
   if (!festivalsData || festivalsData.length === 0) return;
   const f = festivalsData[currentSlide];
-  const nameEl = document.getElementById("sliderFestivalName");
+  const nameEl  = document.getElementById("sliderFestivalName");
   const datesEl = document.getElementById("sliderDates");
-  const hlEl = document.getElementById("sliderHighlight");
-  const msgEl = document.getElementById("sliderMessage");
+  const hlEl    = document.getElementById("sliderHighlight");
+  const msgEl   = document.getElementById("sliderMessage");
   if (nameEl)  nameEl.textContent  = `${f.university} ${f.number||""}${f.festivalName}`;
   if (datesEl) datesEl.textContent = `開催日：${f.dates}`;
   if (hlEl)    hlEl.textContent    = `目玉企画：${f.highlight}`;
@@ -145,17 +147,13 @@ function updateSlide() {
 
   const sliderCard = document.querySelector('.festival-slider-card');
   if (sliderCard && optionsData) {
-    sliderCard.style.cursor = 'pointer';
     const newCard = sliderCard.cloneNode(true);
     sliderCard.parentNode.replaceChild(newCard, sliderCard);
     newCard.onclick = () => {
-      const uniEl = document.getElementById("university");
-      if (!uniEl) return;
       const uniName    = f.university.replace("大学","");
       const campusName = (f.campus||"").replace("キャンパス","").replace("（","").replace("）","");
       const match = optionsData.universityOptions?.find(o => o.includes(uniName) && o.includes(campusName));
       if (match) {
-        // Choice Chips対応
         setChipValue("university", match);
         onSearch();
         document.querySelector('.nav-btn[data-view="search"]')?.click();
@@ -172,7 +170,7 @@ function setupInfoPage() {
   const linksList = document.getElementById("links-list");
   if (linksList && linksData?.length > 0) {
     linksData.forEach(link => {
-      const card = document.createElement("div");
+      const card    = document.createElement("div");
       card.className = "link-card";
       const hasUrl  = link.url && link.url !== "";
       const hasInst = link.sns?.instagram && link.sns.instagram !== "";
@@ -181,10 +179,12 @@ function setupInfoPage() {
         <div class="link-card-title">${escapeHtml(link.university)}</div>
         <div class="link-card-campus">${escapeHtml(link.campus)}</div>
         <div class="link-card-festival">${escapeHtml(link.festivalName)}</div>
-        ${hasUrl ? `<a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="link-card-url">${escapeHtml(link.url)}</a>` : '<div class="link-card-url" style="color:#999;">URL準備中</div>'}
+        ${hasUrl
+          ? `<a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="link-card-url">${escapeHtml(link.url)}</a>`
+          : '<div class="link-card-url" style="color:#999;">URL準備中</div>'}
         ${hasInst||hasX ? `<div class="link-card-sns">
           ${hasInst ? `<a href="https://instagram.com/${escapeHtml(link.sns.instagram).replace('@','')}" target="_blank" rel="noopener" class="sns-link">📷 ${escapeHtml(link.sns.instagram)}</a>` : ''}
-          ${hasX ? `<a href="https://x.com/${escapeHtml(link.sns.x).replace('@','')}" target="_blank" rel="noopener" class="sns-link">𝕏 ${escapeHtml(link.sns.x)}</a>` : ''}
+          ${hasX    ? `<a href="https://x.com/${escapeHtml(link.sns.x).replace('@','')}" target="_blank" rel="noopener" class="sns-link">𝕏 ${escapeHtml(link.sns.x)}</a>` : ''}
         </div>` : ''}
       `;
       linksList.appendChild(card);
@@ -193,17 +193,16 @@ function setupInfoPage() {
 
   const contactInfo = document.getElementById("contact-info");
   if (contactInfo && contactData) {
-    const sns = contactData.sns || {};
+    const sns  = contactData.sns || {};
     const inst = sns.instagram;
     const xSns = sns.x;
     const line = sns["公式LINE"];
-
     contactInfo.innerHTML = `
       <p class="contact-message">${escapeHtml(contactData.message||"")}</p>
-      ${contactData.email ? `<div class="contact-item"><span class="contact-label">📧 Email:</span><span class="contact-value">${escapeHtml(contactData.email)}</span></div>` : ''}
-      ${inst ? `<div class="contact-item"><span class="contact-label">📷 Instagram:</span><a href="${escapeHtml(inst.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(inst.id)}</a></div>` : ''}
-      ${xSns ? `<div class="contact-item"><span class="contact-label">𝕏 X (Twitter):</span><a href="${escapeHtml(xSns.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(xSns.id)}</a></div>` : ''}
-      ${line ? `<div class="contact-item"><span class="contact-label">💬 公式LINE:</span><a href="${escapeHtml(line.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(line.id)}</a></div>` : ''}
+      ${contactData.email ? `<div class="contact-item"><span class="contact-label">📧 Email</span><span class="contact-value">${escapeHtml(contactData.email)}</span></div>` : ''}
+      ${inst ? `<div class="contact-item"><span class="contact-label">📷 Instagram</span><a href="${escapeHtml(inst.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(inst.id)}</a></div>` : ''}
+      ${xSns ? `<div class="contact-item"><span class="contact-label">𝕏 X (Twitter)</span><a href="${escapeHtml(xSns.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(xSns.id)}</a></div>` : ''}
+      ${line ? `<div class="contact-item"><span class="contact-label">💬 公式LINE</span><a href="${escapeHtml(line.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(line.id)}</a></div>` : ''}
     `;
   }
 }
@@ -215,28 +214,32 @@ function setupDescriptionButtons() {
   const descModal = document.getElementById("descModal");
   const descTitle = document.getElementById("descTitle");
   const descText  = document.getElementById("descText");
-  document.querySelectorAll(".info-btn").forEach(btn => {
+
+  document.querySelectorAll(".info-btn[data-type]").forEach(btn => {
     btn.addEventListener("click", () => {
       const type = btn.dataset.type;
       let title = "", text = "";
 
       if (type === "category") {
-        // カテゴリ凡例モーダル
         title = "カテゴリについて";
-        const legendHtml = Object.entries(CATEGORY_COLORS).map(([name, col]) =>
-          `<span class="category-legend-item" style="background:${col.bg};border:1.5px solid ${col.border};color:${col.tag};padding:3px 10px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;font-size:0.85rem;font-weight:600;margin:3px;">${name}</span>`
-        ).join("");
+        const legendHtml = Object.entries(CATEGORY_COLORS)
+          .filter(([name]) => name !== "体験・実験") // 重複エイリアスを除外
+          .map(([name, col]) =>
+            `<span style="background:${col.bg};border:1.5px solid ${col.border};color:${col.tag};padding:3px 10px;border-radius:999px;display:inline-flex;align-items:center;font-size:0.85rem;font-weight:600;margin:3px;">${name}</span>`
+          ).join("");
         if (descTitle) descTitle.textContent = title;
         if (descText)  descText.innerHTML = `<p style="margin-bottom:10px;">企画のジャンルを選択できます。色の意味は以下の通りです：</p><div style="display:flex;flex-wrap:wrap;gap:4px;">${legendHtml}</div>`;
         descModal?.classList.remove("hidden");
         return;
       } else if (type === "field") {
         const val = getChipValue("field");
-        const fd = optionsData?.fieldOptions?.find(f => f.value === val);
+        const fd  = optionsData?.fieldOptions?.find(f => f.value === val);
         title = fd ? fd.value : "分野について";
         text  = fd ? fd.description : "企画の学問分野を選択できます。";
       } else if (type === "university") {
         title = "大学について"; text = "開催キャンパスで絞り込めます。";
+      } else if (type === "date") {
+        title = "開催日について"; text = "開催日で絞り込めます。";
       }
       if (descTitle) descTitle.textContent = title;
       if (descText)  descText.textContent  = text;
@@ -280,31 +283,33 @@ function setChipValue(fieldId, value) {
 }
 
 function buildChipGroup(fieldId, options) {
-  // options: [{value, label}]
   const group = document.querySelector(`.chip-group[data-field="${fieldId}"]`);
   if (!group) return;
   group.innerHTML = "";
+
   const allBtn = document.createElement("button");
-  allBtn.className = "chip-btn active";
+  allBtn.className    = "chip-btn active";
   allBtn.dataset.value = "";
-  allBtn.textContent = "指定なし";
+  allBtn.textContent  = "指定なし";
+  allBtn.type         = "button";
   allBtn.addEventListener("click", () => {
     group.querySelectorAll(".chip-btn").forEach(b => b.classList.remove("active"));
     allBtn.classList.add("active");
   });
   group.appendChild(allBtn);
+
   options.forEach(opt => {
     const btn = document.createElement("button");
-    btn.className = "chip-btn";
+    btn.className    = "chip-btn";
+    btn.type         = "button";
     btn.dataset.value = opt.value;
-    btn.textContent = opt.label || opt.value;
+    btn.textContent  = opt.label || opt.value;
 
-    // カテゴリは色付け
     if (fieldId === "category") {
       const col = getCategoryColor(opt.value);
-      btn.style.setProperty("--chip-bg", col.bg);
+      btn.style.setProperty("--chip-bg",     col.bg);
       btn.style.setProperty("--chip-border", col.border);
-      btn.style.setProperty("--chip-color", col.tag);
+      btn.style.setProperty("--chip-color",  col.tag);
       btn.classList.add("chip-colored");
     }
 
@@ -326,10 +331,10 @@ function onSearch() {
   const date  = getChipValue("date");
   saveSearchFilters({ university:uni, category:cat, field, date });
   const filtered = getAllEvents().filter(ev => {
-    if (uni   && evUniversity(ev) !== uni)   return false;
-    if (cat   && evCategory(ev)   !== cat)   return false;
-    if (field && evField(ev)      !== field) return false;
-    if (date  && evStartDateTime(ev).split('T')[0] !== date) return false;
+    if (uni   && evUniversity(ev) !== uni)                       return false;
+    if (cat   && evCategory(ev)   !== cat)                       return false;
+    if (field && evField(ev)      !== field)                     return false;
+    if (date  && evStartDateTime(ev).split('T')[0] !== date)     return false;
     return true;
   });
   renderResults(filtered);
@@ -339,11 +344,10 @@ function onSearch() {
 function onClear() {
   ["university","category","field","date"].forEach(fieldId => {
     const group = document.querySelector(`.chip-group[data-field="${fieldId}"]`);
-    if (group) {
-      group.querySelectorAll(".chip-btn").forEach(b => b.classList.remove("active"));
-      const first = group.querySelector('.chip-btn[data-value=""]');
-      if (first) first.classList.add("active");
-    }
+    if (!group) return;
+    group.querySelectorAll(".chip-btn").forEach(b => b.classList.remove("active"));
+    const first = group.querySelector('.chip-btn[data-value=""]');
+    if (first) first.classList.add("active");
   });
   saveSearchFilters({ university:"", category:"", field:"", date:"" });
   renderResults(getAllEvents());
@@ -358,7 +362,12 @@ function restoreSearchFromURL() {
     const val = p.get(param);
     if (val) setChipValue(id, val);
   });
-  saveSearchFilters({ university:p.get('uni')||"", category:p.get('cat')||"", field:p.get('field')||"", date:p.get('date')||"" });
+  saveSearchFilters({
+    university: p.get('uni')||"",
+    category:   p.get('cat')||"",
+    field:      p.get('field')||"",
+    date:       p.get('date')||""
+  });
 }
 
 function checkIfFiltersApplied() {
@@ -369,8 +378,8 @@ function updateFilterStatus() {
   const el = document.getElementById("filter-status");
   if (!el) return;
   const has = checkIfFiltersApplied();
-  el.textContent = has ? "(絞り込み)" : "(全体)";
-  el.style.color = has ? "#dc2626" : "#6b7280";
+  el.textContent    = has ? "(絞り込み)" : "(全体)";
+  el.style.color    = has ? "#dc2626" : "#6b7280";
   el.style.fontWeight = has ? "600" : "normal";
 }
 
@@ -382,29 +391,30 @@ async function renderResults(list) {
   const noData = document.getElementById("no-results");
   if (!area) return;
   area.innerHTML = "";
-  if (!Array.isArray(list) || list.length === 0) { if (noData) noData.hidden = false; return; }
+  if (!Array.isArray(list) || list.length === 0) {
+    if (noData) noData.hidden = false;
+    return;
+  }
   if (noData) noData.hidden = true;
-  for (const ev of list) area.appendChild(await createEventCard(ev));
+  for (const ev of list) area.appendChild(createEventCard(ev));
 }
 
-async function createEventCard(ev) {
+function createEventCard(ev) {
   const card = document.createElement("article");
   card.className = "result-card";
   card.dataset.eventId = ev.id;
   const isFav = loadFavoritesArray().includes(ev.id);
 
-  // カテゴリ色
   const col = getCategoryColor(evCategory(ev));
   card.style.background = col.bg;
   card.style.borderLeft = `4px solid ${col.border}`;
 
-  // カテゴリタグ
   const catHtml = evCategory(ev)
     ? `<span class="category-tag" style="background:${col.bg};border:1.5px solid ${col.border};color:${col.tag};">${escapeHtml(evCategory(ev))}</span>`
     : "";
 
   card.innerHTML = `
-    <button class="fav-btn ${isFav?"active":""}" data-id="${ev.id}" aria-label="お気に入り">⭐</button>
+    <button class="fav-btn ${isFav?"active":""}" data-id="${ev.id}" aria-label="お気に入り" type="button">⭐</button>
     <h4>${escapeHtml(evTitle(ev))}</h4>
     <p class="muted event-summary">${escapeHtml(evDescription(ev))}</p>
     <div class="card-meta">
@@ -417,7 +427,10 @@ async function createEventCard(ev) {
     if (e.target.closest('.fav-btn')) return;
     window.location.href = `events_detail.html?id=${ev.id}`;
   });
-  card.querySelector(".fav-btn").addEventListener("click", e => { e.stopPropagation(); toggleFavorite(ev); });
+  card.querySelector(".fav-btn").addEventListener("click", e => {
+    e.stopPropagation();
+    toggleFavorite(ev);
+  });
   return card;
 }
 
@@ -438,8 +451,12 @@ function toggleFavorite(ev) {
   if (typeof id === "undefined") return;
   let favs = loadFavoritesArray();
   let hist = loadHistoryArray();
-  if (favs.includes(id)) { favs = favs.filter(x => x !== id); }
-  else { favs.unshift(id); hist = addToHistory(id, hist); }
+  if (favs.includes(id)) {
+    favs = favs.filter(x => x !== id);
+  } else {
+    favs.unshift(id);
+    hist = addToHistory(id, hist);
+  }
   saveFavoritesArray(favs);
   saveHistoryArray(hist);
   renderFavoritesTable();
@@ -471,11 +488,13 @@ function renderFavoritesTable() {
     .forEach(ev => {
       const s = evStartDateTime(ev);
       let dateLabel = "—", timeLabel = "—";
-      if (s) { try {
-        const d = new Date(s);
-        dateLabel = `${d.getMonth()+1}/${d.getDate()}（${weekdays[d.getDay()]}）`;
-        timeLabel = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-      } catch(e){} }
+      if (s) {
+        try {
+          const d = new Date(s);
+          dateLabel = `${d.getMonth()+1}/${d.getDate()}（${weekdays[d.getDay()]}）`;
+          timeLabel = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        } catch(e){}
+      }
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td class="fav-table-date">${escapeHtml(dateLabel)}</td>
@@ -484,7 +503,7 @@ function renderFavoritesTable() {
           <a href="events_detail.html?id=${ev.id}" class="fav-table-link">${escapeHtml(evTitle(ev))}</a>
           <div class="fav-table-uni">${escapeHtml(evUniversity(ev))}</div>
         </td>
-        <td><button class="fav-table-remove" aria-label="解除">⭐</button></td>
+        <td><button class="fav-btn fav-table-remove" type="button" aria-label="解除">⭐</button></td>
       `;
       tr.querySelector(".fav-table-remove").addEventListener("click", () => toggleFavorite(ev));
       tbody.appendChild(tr);
@@ -499,7 +518,8 @@ function loadHistory()   { renderHistory(); }
 // ============================
 function addToHistory(id, history) {
   let h = Array.isArray(history) ? history.slice() : loadHistoryArray();
-  h = h.filter(x => x !== id); h.unshift(id);
+  h = h.filter(x => x !== id);
+  h.unshift(id);
   return h.length > HISTORY_MAX ? h.slice(0, HISTORY_MAX) : h;
 }
 
@@ -508,7 +528,10 @@ function renderHistory() {
   if (!area) return;
   area.innerHTML = "";
   const history = loadHistoryArray();
-  if (history.length === 0) { area.innerHTML = '<div class="muted">履歴はありません。</div>'; return; }
+  if (history.length === 0) {
+    area.innerHTML = '<div class="muted">履歴はありません。</div>';
+    return;
+  }
   const all = getAllEvents();
   history.forEach(id => {
     const ev = all.find(e => e.id === id);
@@ -521,8 +544,8 @@ function renderHistory() {
         <div class="muted">${escapeHtml(evUniversity(ev))}</div>
       </div>
       <div class="history-actions">
-        <button class="btn small readd" data-id="${id}">再登録</button>
-        <button class="btn small del"   data-id="${id}">🗑️</button>
+        <button class="btn small readd" type="button" data-id="${id}">再登録</button>
+        <button class="btn small del"   type="button" data-id="${id}">🗑️</button>
       </div>
     `;
     item.querySelector(".readd").addEventListener("click", () => {
@@ -531,17 +554,17 @@ function renderHistory() {
       renderFavoritesTable(); renderHistory();
     });
     item.querySelector(".del").addEventListener("click", () => {
-      saveHistoryArray(loadHistoryArray().filter(x => x !== id)); renderHistory();
+      saveHistoryArray(loadHistoryArray().filter(x => x !== id));
+      renderHistory();
     });
     area.appendChild(item);
   });
 }
 
 // ============================
-// 📱 ナビゲーション（スマホ: ハンバーガー / PC: ボトムナビ）
+// 📱 ナビゲーション
 // ============================
 function setupNavigation() {
-  const buttons    = document.querySelectorAll(".nav-btn");
   const allAreaIds = ["search-area","results-area","favorites-area","room-guide-area","story-area","map-area","info-area"];
   const viewMap    = {
     "search":     ["search-area","results-area"],
@@ -553,22 +576,20 @@ function setupNavigation() {
   };
 
   function switchView(view) {
-    buttons.forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
     document.querySelectorAll(`.nav-btn[data-view="${view}"]`).forEach(b => b.classList.add("active"));
     allAreaIds.forEach(id => document.getElementById(id)?.classList.add("hidden"));
     (viewMap[view]||[]).forEach(id => document.getElementById(id)?.classList.remove("hidden"));
     document.getElementById("festival-slider-section")?.classList.toggle("hidden", view !== "search");
     if (view === "favorites") { renderFavoritesTable(); renderHistory(); }
-    // ハンバーガーメニューを閉じる
     document.getElementById("hamburger-menu")?.classList.remove("open");
     document.getElementById("hamburger-overlay")?.classList.remove("open");
   }
 
-  buttons.forEach(btn => {
+  document.querySelectorAll(".nav-btn").forEach(btn => {
     btn.addEventListener("click", () => switchView(btn.dataset.view));
   });
 
-  // ハンバーガートグル
   document.getElementById("hamburger-toggle")?.addEventListener("click", () => {
     document.getElementById("hamburger-menu")?.classList.toggle("open");
     document.getElementById("hamburger-overlay")?.classList.toggle("open");
@@ -596,7 +617,7 @@ function setupIntroModal() {
 }
 
 // ============================
-// 📌 セレクト選択肢 → Choice Chips
+// 📌 Choice Chips 生成
 // ============================
 function loadOptionsSafe() {
   if (!optionsData) return;
@@ -611,7 +632,6 @@ function loadOptionsSafe() {
     buildChipGroup("field", optionsData.fieldOptions.map(f => ({ value: f.value, label: f.value })));
   }
 
-  // 開催日チップ（固定）
   const dateOptions = [
     { value: "2025-11-01", label: "11/1(土)" },
     { value: "2025-11-02", label: "11/2(日)" },
@@ -626,6 +646,26 @@ function loadOptionsSafe() {
 // ============================
 // 🏫 教室案内データ
 // ============================
+/*
+  ▼▼▼ キャンパス・建物・教室を書き足す場所 ▼▼▼
+
+  "キャンパスID": {
+    label: "〇〇大学 〇〇キャンパス",
+    buildings: {
+      "建物ID": {
+        label: "〇〇棟",
+        rooms: [
+          {
+            id:       "部屋ID（一意）",
+            label:    "1F 101教室",
+            desc:     "正門から〇〇を目指して...",
+            mapImage: "img/map_XXX.jpg"   // なければ ""
+          }
+        ]
+      }
+    }
+  }
+*/
 const roomGuideData = {
   "campus-sample": {
     label: "（サンプル）〇〇大学 〇〇キャンパス",
@@ -711,7 +751,26 @@ function setupRoomGuide() {
 // ============================
 // 📹 ストーリーデータ
 // ============================
-const storyData = [];
+/*
+  ▼▼▼ 動画を書き足す場所 ▼▼▼
+
+  {
+    id:          "story-1",
+    title:       "学祭オープニング",
+    description: "開幕を飾る映像です。",       // 省略可（"" でもOK）
+    thumbnail:   "img/thumb1.jpg",             // サムネ画像パス（なければ ""）
+    type:        "youtube",                    // "youtube" / "vimeo" / "direct"
+    url:         "https://www.youtube.com/watch?v=XXXXX"
+  }
+
+  typeの説明：
+    "youtube" → YouTubeのURLをそのままコピペ（youtu.beの短縮URLも可）
+    "vimeo"   → VimeoのURLをそのままコピペ
+    "direct"  → mp4など動画ファイルの直接URL
+*/
+const storyData = [
+  // ここに追加（複数ある場合はカンマ区切り）
+];
 
 function setupStory() {
   const listEl  = document.getElementById("story-list");
@@ -759,7 +818,7 @@ function openStoryModal(story) {
     : `<iframe src="${escapeHtml(embedUrl)}" frameborder="0" allowfullscreen allow="autoplay; encrypted-media" style="width:100%;aspect-ratio:16/9;border-radius:8px;"></iframe>`;
   modal.innerHTML = `
     <div class="modal-content" style="max-width:680px;">
-      <button class="modal-close" id="story-modal-close">✕</button>
+      <button class="modal-close" id="story-modal-close" type="button">✕</button>
       <h3 style="margin:0 2rem 1rem 0;">${escapeHtml(story.title)}</h3>
       ${playerHtml}
       ${story.description ? `<p style="margin-top:12px;color:#555;font-size:0.9rem;">${escapeHtml(story.description)}</p>` : ''}
