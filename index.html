@@ -3,91 +3,244 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>受験生応援！学園祭ナビ</title>
+  <title>学祭イベント検索</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <header class="site-header">
-    <div class="header-main">
-      <h1 class="main-title">大学生活を体験しよう！<br>🎪 学園祭 企画ナビ</h1>
-      <div id="menu-toggle" class="hamburger-menu">
-        <span></span><span></span><span></span>
-      </div>
+  <!-- 試作告知バー -->
+  <div class="notice-banner">
+    <div class="notice-content">
+      <span class="notice-icon">⚠️</span>
+      <p class="notice-text">
+        <strong>このサイトは試作版です。</strong>
+        データは各学祭公式サイトに掲載されている情報の一部を引用しており、正確性を保証するものではありません。
+      </p>
     </div>
-    <p class="subtitle">未来のキャンパスを歩く「ストーリー形式」ガイド</p>
+  </div>
+
+  <!-- ヘッダー -->
+  <header class="site-header">
+    <h1>🎪 学祭イベント検索</h1>
+    <p class="subtitle">複数大学の学園祭情報をまとめて検索</p>
   </header>
 
+  <!-- 学祭情報スライダー -->
+  <section id="festival-slider-section" class="festival-slider">
+    <div class="slider-container">
+      <button class="slider-btn prev" id="sliderPrev" aria-label="前へ">◀</button>
+      <div class="slider-content festival-slider-card" id="sliderContent">
+        <h3 class="slider-title">次回の開催は...</h3>
+        <p class="slider-festival-name" id="sliderFestivalName">読み込み中...</p>
+        <p class="slider-dates" id="sliderDates"></p>
+        <p class="slider-highlight" id="sliderHighlight"></p>
+        <p class="slider-message" id="sliderMessage"></p>
+      </div>
+      <button class="slider-btn next" id="sliderNext" aria-label="次へ">▶</button>
+    </div>
+    <div class="slider-dots" id="sliderDots"></div>
+  </section>
+
   <div class="container">
+
+    <!-- 検索エリア -->
     <section id="search-area" class="card">
-      <h2>🏷️ カテゴリから探す</h2>
-      <div id="tag-container" class="tag-list">
-        </div>
-      
-      <div class="filter-row">
-        <select id="university" class="options"><option value="">大学指定なし</option></select>
-        <select id="date-select" class="options">
-          <option value="">日程指定なし</option>
-          <option value="2025-11-26">11月26日(追加分)</option>
+      <h2>🔍 企画を探す</h2>
+
+      <div class="filter-group">
+        <label class="filter-title" for="university">大学
+          <button class="info-btn" data-type="university" aria-label="大学の説明">?</button>
+        </label>
+        <select id="university" class="options">
+          <option value="">指定なし</option>
         </select>
       </div>
 
-      <div class="btn-group">
-        <button id="searchBtn" class="btn primary-3d">検索</button>
+      <div class="filter-group">
+        <label class="filter-title" for="category">カテゴリ
+          <button class="info-btn" data-type="category" aria-label="カテゴリの説明">?</button>
+        </label>
+        <select id="category" class="options">
+          <option value="">指定なし</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-title" for="field">分野
+          <button class="info-btn" data-type="field" aria-label="分野の説明">?</button>
+        </label>
+        <select id="field" class="options">
+          <option value="">指定なし</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-title" for="date">開催日
+          <button class="info-btn" data-type="date" aria-label="開催日の説明">?</button>
+        </label>
+        <select id="date" class="options">
+          <option value="">指定なし</option>
+          <option value="2025-11-01">11月1日（土）</option>
+          <option value="2025-11-02">11月2日（日）</option>
+          <option value="2025-11-03">11月3日（月）</option>
+          <option value="2025-11-04">11月4日（火）</option>
+          <option value="2025-11-22">11月22日（土）</option>
+          <option value="2025-11-23">11月23日（日）</option>
+        </select>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button id="searchBtn" class="btn primary-3d" style="flex:1;">検索</button>
         <button id="clearBtn" class="btn ghost">クリア</button>
       </div>
     </section>
 
+    <!-- 検索結果エリア -->
     <section id="results-area">
-      <h2>📋 おすすめ行程・イベント一覧</h2>
+      <h2 id="results-title">📋 検索結果 <span id="filter-status" class="filter-status">(全体)</span></h2>
       <div id="results" class="results-grid"></div>
+      <div id="no-results" class="muted" hidden>該当する企画が見つかりませんでした。</div>
     </section>
 
+    <!-- お気に入りエリア -->
     <section id="favorites-area" class="card hidden">
-      <h2>⭐ 当日スケジュール（簡易表）</h2>
-      <div class="table-wrapper">
-        <table id="schedule-table">
-          <thead>
-            <tr><th>時間</th><th>企画内容</th><th>場所</th></tr>
-          </thead>
-          <tbody id="schedule-body">
-            </tbody>
-        </table>
+      <h2>⭐ お気に入り</h2>
+      
+      <!-- カレンダー表示部分 -->
+      <div class="calendar-container" style="margin-bottom: 24px;">
+        <div class="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <button id="calendar-prev-month" class="btn ghost" style="padding: 8px 16px;">← 前月</button>
+          <h3 id="calendar-month-title" style="margin: 0;">2025年10月</h3>
+          <button id="calendar-next-month" class="btn ghost" style="padding: 8px 16px;">次月 →</button>
+        </div>
+        <div id="calendar-grid" class="calendar-grid"></div>
       </div>
-      <hr>
-      <h3>🕘 チェックした履歴</h3>
+      
+      <hr style="margin: 24px 0;">
+      
+      <h3>⭐ お気に入り一覧</h3>
+      <div id="favorites-list"></div>
+      <hr style="margin:1.5rem 0;">
+      <h3>🕘 履歴</h3>
       <div id="fav-history"></div>
     </section>
 
-    <section id="transit-area" class="card hidden">
-      <h2>🏃‍♂️ 企画間・教室ルート案内</h2>
-      <div class="transit-box">
-        <select id="transit-departure" class="options"><option value="">出発教室を選択</option></select>
-        <div class="arrow">↓</div>
-        <select id="transit-arrival" class="options"><option value="">到着教室を選択</option></select>
-        <button onclick="searchTransitRoute()" class="btn primary-3d full-width">最短ルートを表示</button>
+    <!-- 乗換案内エリア -->
+    <div id="transit-area" class="hidden">
+      <h2>🚇 大学間乗換案内</h2>
+    
+      <div style="background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div>
+            <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px;">出発地</label>
+            <select id="transit-departure" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+              <option value="">出発地を選択してください</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px;">到着地</label>
+            <select id="transit-arrival" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+              <option value="">到着地を選択してください</option>
+            </select>
+          </div>
+        </div>
+      
+        <button onclick="searchTransitRoute()" style="width: 100%; background: #2563eb; color: white; padding: 12px; border: none; border-radius: 4px; font-weight: 500; cursor: pointer;">
+          ルートを検索
+        </button>
       </div>
+
       <div id="transit-result"></div>
+    </div>
+
+    <!-- マップエリア -->
+    <section id="map-area" class="card hidden">
+      <h2>🗺️ キャンパスマップ</h2>
+      <div class="map-placeholder" style="text-align: center; padding: 60px 20px; background: #f9fafb; border-radius: 8px; color: #6b7280;">
+        <p style="font-size: 1.2em; margin-bottom: 8px;">🗺️</p>
+        <p>マップ機能は準備中です</p>
+        <p style="font-size: 0.9em; margin-top: 8px;">近日公開予定</p>
+      </div>
     </section>
 
-    <section id="map-area" class="card hidden">
-      <h2>🗺️ 学内マップ（準備中）</h2>
-      <div class="map-container">
-        <img src="data/map_screenshot.png" alt="マップ準備中" class="placeholder-img">
-        <p>※ここに地図のスクショが表示されます</p>
+    <!-- 情報エリア -->
+    <section id="info-area" class="card hidden">
+      <h2>ℹ️ 情報</h2>
+      
+      <!-- リンク集 -->
+      <div class="info-section">
+        <h3>🔗 協力大学 学祭公式サイト</h3>
+        <div id="links-list" class="links-list"></div>
+      </div>
+
+      <hr style="margin:2rem 0;">
+
+      <!-- 問い合わせ先 -->
+      <div class="info-section">
+        <h3>📧 お問い合わせ</h3>
+        <div id="contact-info" class="contact-info"></div>
       </div>
     </section>
 
   </div>
 
+  <!-- ボトムナビ -->
   <nav class="bottom-nav">
-    <button class="nav-btn active" data-view="search"><span>🔍</span><label>探す</label></button>
-    <button class="nav-btn" data-view="favorites"><span>⭐</span><label>リスト</label></button>
-    <button class="nav-btn" data-view="transit"><span>🏃‍♂️</span><label>移動</label></button>
-    <button class="nav-btn" data-view="map"><span>🗺️</span><label>マップ</label></button>
-    <button class="nav-btn" data-view="info"><span>ℹ️</span><label>情報</label></button>
+    <button class="nav-btn active" data-view="search">
+      <span class="nav-icon">🔍</span>
+      <span class="nav-label">検索</span>
+    </button>
+    <button class="nav-btn" data-view="favorites">
+      <span class="nav-icon">⭐</span>
+      <span class="nav-label">お気に入り</span>
+    </button>
+    <button class="nav-btn" data-view="transit">
+      <span class="nav-icon">🚇</span>
+      <span class="nav-label">乗換案内</span>
+    </button>
+    <button class="nav-btn" data-view="map">
+      <span class="nav-icon">🗺️</span>
+      <span class="nav-label">マップ</span>
+    </button>
+    <button class="nav-btn" data-view="info">
+      <span class="nav-icon">ℹ️</span>
+      <span class="nav-label">情報</span>
+    </button>
   </nav>
+  
+  <!-- 初回モーダル -->
+  <div id="introModal" class="modal hidden">
+    <div class="modal-content">
+      <button id="introClose" class="modal-close">✕</button>
+      <h2>🎪 学祭イベント検索へようこそ！</h2>
+      <p>
+        複数の大学の学園祭情報を一度に検索できます。<br>
+        お気に入り登録で気になる企画をまとめておけます。
+      </p>
+      <div class="modal-actions">
+        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;">
+          <input type="checkbox" id="dontShow">
+          <span>次回から表示しない</span>
+        </label>
+        <button id="introOk" class="btn primary-3d">OK</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- 説明モーダル -->
+  <div id="descModal" class="modal hidden">
+    <div class="modal-content">
+      <button id="descClose" class="modal-close">✕</button>
+      <h3 id="descTitle"></h3>
+      <p id="descText"></p>
+      <div class="modal-actions">
+        <button id="descOk" class="btn primary-3d">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- スクリプト読み込み（JSON対応版） -->
   <script src="script.js"></script>
+
 </body>
 </html>
