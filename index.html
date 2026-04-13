@@ -41,42 +41,46 @@
   <div class="container">
 
     <section id="search-area" class="card">
-      <h2>🔍 企画を探す</h2>
+      <h2>🔍 企画を探す
+        <button class="info-btn search-help-btn" id="searchHelpBtn" aria-label="検索の説明">?</button>
+      </h2>
+
       <div class="filter-group">
-        <label class="filter-title" for="university">大学
+        <label class="filter-title">大学
           <button class="info-btn" data-type="university" aria-label="大学の説明">?</button>
         </label>
-        <select id="university" class="options">
-          <option value="">指定なし</option>
-          <option value="">中央大学市谷田町キャンパス</option>
-        </select>
+        <div class="chip-group" data-field="university">
+          <!-- JSで生成 -->
+        </div>
       </div>
+
       <div class="filter-group">
-        <label class="filter-title" for="category">カテゴリ
+        <label class="filter-title">カテゴリ
           <button class="info-btn" data-type="category" aria-label="カテゴリの説明">?</button>
         </label>
-        <select id="category" class="options"><option value="">指定なし</option></select>
+        <div class="chip-group" data-field="category">
+          <!-- JSで生成 -->
+        </div>
       </div>
+
       <div class="filter-group">
-        <label class="filter-title" for="field">分野
+        <label class="filter-title">分野
           <button class="info-btn" data-type="field" aria-label="分野の説明">?</button>
         </label>
-        <select id="field" class="options"><option value="">指定なし</option></select>
+        <div class="chip-group" data-field="field">
+          <!-- JSで生成 -->
+        </div>
       </div>
+
       <div class="filter-group">
-        <label class="filter-title" for="date">開催日
+        <label class="filter-title">開催日
           <button class="info-btn" data-type="date" aria-label="開催日の説明">?</button>
         </label>
-        <select id="date" class="options">
-          <option value="">指定なし</option>
-          <option value="2025-11-01">11月1日（土）</option>
-          <option value="2025-11-02">11月2日（日）</option>
-          <option value="2025-11-03">11月3日（月）</option>
-          <option value="2025-11-04">11月4日（火）</option>
-          <option value="2025-11-22">11月22日（土）</option>
-          <option value="2025-11-23">11月23日（日）</option>
-        </select>
+        <div class="chip-group" data-field="date">
+          <!-- JSで生成 -->
+        </div>
       </div>
+
       <div style="display:flex;gap:8px;margin-top:12px;">
         <button id="searchBtn" class="btn primary-3d" style="flex:1;">検索</button>
         <button id="clearBtn" class="btn ghost">クリア</button>
@@ -177,9 +181,10 @@
       </div>
     </section>
 
-  </div>
+  </div><!-- /.container -->
 
-  <nav class="bottom-nav">
+  <!-- ボトムナビ（PC・タブレット） -->
+  <nav class="bottom-nav" id="bottom-nav">
     <button class="nav-btn active" data-view="search">
       <span class="nav-icon">🔍</span>
       <span class="nav-label">検索</span>
@@ -206,6 +211,45 @@
     </button>
   </nav>
 
+  <!-- ハンバーガーボタン（スマホのみ表示） -->
+  <button class="hamburger-toggle" id="hamburger-toggle" aria-label="メニューを開く">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- オーバーレイ -->
+  <div class="hamburger-overlay" id="hamburger-overlay"></div>
+
+  <!-- スライドアップメニュー -->
+  <div class="hamburger-menu" id="hamburger-menu">
+    <div class="hamburger-menu-inner">
+      <button class="nav-btn active" data-view="search">
+        <span class="nav-icon">🔍</span>
+        <span class="nav-label">検索</span>
+      </button>
+      <button class="nav-btn" data-view="favorites">
+        <span class="nav-icon">⭐</span>
+        <span class="nav-label">お気に入り</span>
+      </button>
+      <button class="nav-btn" data-view="room-guide">
+        <span class="nav-icon">🏫</span>
+        <span class="nav-label">教室案内</span>
+      </button>
+      <button class="nav-btn" data-view="story">
+        <span class="nav-icon">📹</span>
+        <span class="nav-label">ストーリー</span>
+      </button>
+      <button class="nav-btn" data-view="map">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-label">マップ</span>
+      </button>
+      <button class="nav-btn" data-view="info">
+        <span class="nav-icon">ℹ️</span>
+        <span class="nav-label">情報</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- モーダル群 -->
   <div id="introModal" class="modal hidden">
     <div class="modal-content">
       <button id="introClose" class="modal-close">✕</button>
