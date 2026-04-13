@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>イベント詳細 - 学祭イベント検索</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="max-w-4xl mx-auto p-4">
+    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <a href="index.html" id="back-to-search" style="color: #2563eb; text-decoration: none; font-size: 14px;">← 検索ページに戻る</a>
+      <button id="add-to-calendar-btn" style="background: #16a34a; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px;">📅 カレンダーに追加</button>
+    </div>
+
+    <div id="event-detail-content" style="background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <div style="text-align: center; padding: 40px; color: #666;">読み込み中...</div>
+    </div>
+  </div>
+
+  <script>
+    // URLパラメータからイベントIDを取得
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventId = urlParams.get('id');
+
+    // 戻るボタンに検索条件を保持
+    const backBtn = document.getElementById('back-to-search');
+    const savedFilters = localStorage.getItem('searchFilters');
+    if (savedFilters) {
+      const filters = JSON.parse(savedFilters);
+      const params = new URLSearchParams();
+      if (filters.university) params.set('uni', filters.university);
+      if (filters.category) params.set('cat', filters.category);
+      if (filters.field) params.set('field', filters.field);
+      if (filters.date) params.set('date', filters.date);
+      if (params.toString()) {
+        backBtn.href = `index.html?${params.toString()}`;
+      }
+    }
+
+    let currentEvent = null;
+
+    if (!eventId) {
+      document.getElementById('event-detail-content').innerHTML = `
+        <div style="text-align: center; padding: 40px; color: #c33;">
+          <h2>エラー</h2>
+          <p>イベントIDが指定されていません。</p>
+          <a href="index.html" style="color: #2563eb;">検索ページに戻る</a>
+        </div>
+      `;
+    } else {
+      loadEventDetail(eventId);
+    }
+
+    async function loadEventDetail(id) {
+      try {
+        const response = await fetch('data/events.json');
+        const events = await response.json();
+        const event = events.find(e => e.id == id);
+
+        if (!event) {
+          document.getElementById('event-detail-content').innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #c33;">
+              <h2>イベントが見つかりません</h2>
+              <p>指定されたイベント（ID: ${id}）は存在しません。</p>
+              <a href="index.html" style="color: #2563eb;">検索ページに戻る</a>
+            </div>
+          `;
+          return;
+        }
+
+        currentEvent = event;
+
+        // イベント詳細を表示
+        const name = event.name || event["企画名"] || "(無題)";
+        const subtitle = event.subtitle || event["サブタイトル"] || "";
+        const description = event.description || event["説明"] || "";
+        const university = event.university || event["大学"] || "";
+        const category = event.category || event["カテゴリ"] || "";
+        const field = event.field || event["分野"] || "";
+        const startDatetime = event.startDatetime || event.start_datetime || event["start_datetime"] || "";
+        const endDatetime = event.endDatetime || event.end_datetime || event["end_datetime"] || "";
+        const location = event.location || event["場所"] || "";
+
+        // 日時フォーマット
+        let dateTimeStr = "";
+        if (startDatetime) {
+          try {
+            const start = new Date(startDatetime);
+            const year = start.getFullYear();
+            const month = start.getMonth() + 1;
+            const day = start.getDate();
+            const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+            const weekday = weekdays[start.getDay()];
+            const startHour = String(start.getHours()).padStart(2, '0');
+            const startMin = String(start.getMinutes()).padStart(2, '0');
+            
+            dateTimeStr = `${year}年${month}月${day}日（${weekday}） ${startHour}:${startMin}`;
+            
+            if (endDatetime) {
+              const end = new Date(endDatetime);
+              const endHour = String(end.getHours()).padStart(2, '0');
+              const endMin = String(end.getMinutes()).padStart(2, '0');
+              dateTimeStr += `～${endHour}:${endMin}`;
+            }
+          } catch (e) {
+            dateTimeStr = startDatetime;
+          }
+        }
+
+        document.getElementById('event-detail-content').innerHTML = `
+          <h1 style="font-size: 28px; font-weight: bold; color: #1e40af; margin-bottom: 8px;">${escapeHtml(name)}</h1>
+          ${subtitle ? `<p style="font-size: 18px; color: #666; margin-bottom: 20px;">${escapeHtml(subtitle)}</p>` : ''}
+          
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+            <span style="background: #dbeafe; color: #1e40af; padding: 6px 12px; border-radius: 4px; font-size: 14px;">${escapeHtml(university)}</span>
+            <span style="background: #fef3c7; color: #92400e; padding: 6px 12px; border-radius: 4px; font-size: 14px;">${escapeHtml(category)}</span>
+            <span style="background: #e0e7ff; color: #4338ca; padding: 6px 12px; border-radius: 4px; font-size: 14px;">${escapeHtml(field)}</span>
+          </div>
+
+          ${dateTimeStr ? `
+            <div style="background: #f3f4f6; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+              <div style="font-weight: 600; color: #374151; margin-bottom: 8px;">📅 開催日時</div>
+              <div style="color: #1f2937;">${escapeHtml(dateTimeStr)}</div>
+            </div>
+          ` : ''}
+
+          ${location ? `
+            <div style="background: #f3f4f6; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+              <div style="font-weight: 600; color: #374151; margin-bottom: 8px;">📍 場所</div>
+              <div style="color: #1f2937;">${escapeHtml(location)}</div>
+            </div>
+          ` : ''}
+
+          <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <div style="font-weight: 600; color: #374151; margin-bottom: 12px; font-size: 18px;">📝 詳細説明</div>
+            <div style="color: #1f2937; line-height: 1.8; white-space: pre-wrap;">${escapeHtml(description)}</div>
+          </div>
+
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="index.html" style="display: inline-block; background: #2563eb; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 500;">検索ページに戻る</a>
+          </div>
+        `;
+
+        // カレンダー追加ボタンのイベントリスナー
+        setupCalendarButton();
+
+      } catch (error) {
+        console.error('データ読み込みエラー:', error);
+        document.getElementById('event-detail-content').innerHTML = `
+          <div style="text-align: center; padding: 40px; color: #c33;">
+            <h2>エラー</h2>
+            <p>データの読み込みに失敗しました。</p>
+            <a href="index.html" style="color: #2563eb;">検索ページに戻る</a>
+          </div>
+        `;
+      }
+    }
+
+    function setupCalendarButton() {
+      const btn = document.getElementById('add-to-calendar-btn');
+      if (!btn || !currentEvent) return;
+
+      btn.addEventListener('click', async () => {
+        // カレンダーに追加されているイベントを取得
+        const calendarEvents = JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+        
+        const startDatetime = currentEvent.startDatetime || currentEvent.start_datetime || currentEvent["start_datetime"];
+        const endDatetime = currentEvent.endDatetime || currentEvent.end_datetime || currentEvent["end_datetime"];
+        const university = currentEvent.university || currentEvent["大学"];
+
+        if (!startDatetime) {
+          alert('このイベントには開催日時が設定されていません。');
+          return;
+        }
+
+        // 時間の重複チェック
+        const conflicts = checkTimeConflicts(calendarEvents, startDatetime, endDatetime, university);
+        
+        if (conflicts.length > 0) {
+          let message = '⚠️ 以下のイベントと時間が重複しています：\n\n';
+          conflicts.forEach(c => {
+            message += `• ${c.name}\n`;
+            if (c.needsTransit) {
+              message += `  → 異なるキャンパスへの移動が必要です\n`;
+            }
+          });
+          message += '\nそれでも追加しますか？';
+          
+          if (!confirm(message)) {
+            return;
+          }
+        }
+
+        // カレンダーに追加
+        calendarEvents.push({
+          id: currentEvent.id,
+          name: currentEvent.name || currentEvent["企画名"],
+          university: university,
+          startDatetime: startDatetime,
+          endDatetime: endDatetime
+        });
+
+        localStorage.setItem('calendarEvents', JSON.stringify(calendarEvents));
+        
+        btn.textContent = '✓ カレンダーに追加済み';
+        btn.style.background = '#6b7280';
+        btn.disabled = true;
+
+        alert('カレンダーに追加しました！');
+      });
+    }
+
+    function checkTimeConflicts(calendarEvents, newStart, newEnd, newUniversity) {
+      const conflicts = [];
+      const newStartTime = new Date(newStart);
+      const newEndTime = newEnd ? new Date(newEnd) : new Date(newStartTime.getTime() + 60*60*1000); // 終了時刻がなければ1時間後
+
+      calendarEvents.forEach(event => {
+        const eventStart = new Date(event.startDatetime);
+        const eventEnd = event.endDatetime ? new Date(event.endDatetime) : new Date(eventStart.getTime() + 60*60*1000);
+
+        // 時間の重複チェック
+        if (newStartTime < eventEnd && newEndTime > eventStart) {
+          const needsTransit = event.university !== newUniversity;
+          conflicts.push({
+            name: event.name,
+            needsTransit: needsTransit
+          });
+        }
+      });
+
+      return conflicts;
+    }
+
+    function escapeHtml(str) {
+      if (!str && str !== 0) return "";
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+  </script>
+</body>
+</html>
