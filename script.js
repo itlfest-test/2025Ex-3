@@ -636,9 +636,7 @@ function loadOptionsSafe() {
     { value: "2025-11-01", label: "11/1(土)" },
     { value: "2025-11-02", label: "11/2(日)" },
     { value: "2025-11-03", label: "11/3(月)" },
-    { value: "2025-11-04", label: "11/4(火)" },
-    { value: "2025-11-22", label: "11/22(土)" },
-    { value: "2025-11-23", label: "11/23(日)" },
+    { value: "2025-11-04", label: "11/4(火)" }
   ];
   buildChipGroup("date", dateOptions);
 }
