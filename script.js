@@ -29,9 +29,6 @@ const CATEGORY_COLORS = {
   "その他":                           { bg: "rgba(209,213,219,0.35)", border: "#9ca3af", tag: "#374151" },
 };
 
-// 複数選択対応: チップの選択状態管理
-const chipSelections = {}; // { fieldId: Set<value> }
-
 function getCategoryColor(category) {
   if (!category) return CATEGORY_COLORS["その他"];
   if (CATEGORY_COLORS[category]) return CATEGORY_COLORS[category];
@@ -270,43 +267,40 @@ function setupSearchHelp() {
 }
 
 // ============================
-// 🔍 Choice Chips ユーティリティ
+// 🔍 Choice Chips ユーティリティ（複数選択対応）
 // ============================
+const chipSelections = {}; // { fieldId: Set<value> }
+
+// 選択中の値を配列で返す（未選択は空配列）
 function getChipValue(fieldId) {
-  const active = document.querySelector(`.chip-group[data-field="${fieldId}"] .chip-btn.active`);
-  return active ? active.dataset.value : "";
+  const sel = chipSelections[fieldId];
+  if (!sel || sel.size === 0) return [];
+  return [...sel];
 }
 
+// URLリストアなど外部から値をセットする
 function setChipValue(fieldId, value) {
+  if (!chipSelections[fieldId]) chipSelections[fieldId] = new Set();
+  chipSelections[fieldId].add(value);
   const group = document.querySelector(`.chip-group[data-field="${fieldId}"]`);
   if (!group) return;
   group.querySelectorAll(".chip-btn").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.value === value);
+    if (btn.dataset.value === value) btn.classList.add("active");
   });
 }
 
 function buildChipGroup(fieldId, options) {
   const group = document.querySelector(`.chip-group[data-field="${fieldId}"]`);
   if (!group) return;
+  chipSelections[fieldId] = new Set();
   group.innerHTML = "";
-
-  const allBtn = document.createElement("button");
-  allBtn.className    = "chip-btn active";
-  allBtn.dataset.value = "";
-  allBtn.textContent  = "指定なし";
-  allBtn.type         = "button";
-  allBtn.addEventListener("click", () => {
-    group.querySelectorAll(".chip-btn").forEach(b => b.classList.remove("active"));
-    allBtn.classList.add("active");
-  });
-  group.appendChild(allBtn);
 
   options.forEach(opt => {
     const btn = document.createElement("button");
-    btn.className    = "chip-btn";
-    btn.type         = "button";
+    btn.className     = "chip-btn";
+    btn.type          = "button";
     btn.dataset.value = opt.value;
-    btn.textContent  = opt.label || opt.value;
+    btn.textContent   = opt.label || opt.value;
 
     if (fieldId === "category") {
       const col = getCategoryColor(opt.value);
@@ -317,8 +311,15 @@ function buildChipGroup(fieldId, options) {
     }
 
     btn.addEventListener("click", () => {
-      group.querySelectorAll(".chip-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      const val = btn.dataset.value;
+      if (chipSelections[fieldId].has(val)) {
+        // もう一回押したら解除
+        chipSelections[fieldId].delete(val);
+        btn.classList.remove("active");
+      } else {
+        chipSelections[fieldId].add(val);
+        btn.classList.add("active");
+      }
     });
     group.appendChild(btn);
   });
@@ -334,10 +335,10 @@ function onSearch() {
   const date  = getChipValue("date");
   saveSearchFilters({ university:uni, category:cat, field, date });
   const filtered = getAllEvents().filter(ev => {
-    if (uni   && evUniversity(ev) !== uni)                       return false;
-    if (cat   && evCategory(ev)   !== cat)                       return false;
-    if (field && evField(ev)      !== field)                     return false;
-    if (date  && evStartDateTime(ev).split('T')[0] !== date)     return false;
+    if (uni.length   && !uni.includes(evUniversity(ev)))                        return false;
+    if (cat.length   && !cat.includes(evCategory(ev)))                          return false;
+    if (field.length && !field.includes(evField(ev)))                           return false;
+    if (date.length  && !date.includes(evStartDateTime(ev).split('T')[0]))      return false;
     return true;
   });
   renderResults(filtered);
@@ -346,11 +347,9 @@ function onSearch() {
 
 function onClear() {
   ["university","category","field","date"].forEach(fieldId => {
+    chipSelections[fieldId] = new Set();
     const group = document.querySelector(`.chip-group[data-field="${fieldId}"]`);
-    if (!group) return;
-    group.querySelectorAll(".chip-btn").forEach(b => b.classList.remove("active"));
-    const first = group.querySelector('.chip-btn[data-value=""]');
-    if (first) first.classList.add("active");
+    if (group) group.querySelectorAll(".chip-btn").forEach(b => b.classList.remove("active"));
   });
   saveSearchFilters({ university:"", category:"", field:"", date:"" });
   renderResults(getAllEvents());
@@ -374,7 +373,10 @@ function restoreSearchFromURL() {
 }
 
 function checkIfFiltersApplied() {
-  return ["university","category","field","date"].some(id => !!getChipValue(id));
+  return ["university","category","field","date"].some(id => {
+    const sel = chipSelections[id];
+    return sel && sel.size > 0;
+  });
 }
 
 function updateFilterStatus() {
@@ -639,7 +641,7 @@ function loadOptionsSafe() {
     { value: "2025-11-01", label: "11/1(土)" },
     { value: "2025-11-02", label: "11/2(日)" },
     { value: "2025-11-03", label: "11/3(月)" },
-    { value: "2025-11-04", label: "11/4(火)" }
+    { value: "2025-11-04", label: "11/4(火)" },
   ];
   buildChipGroup("date", dateOptions);
 }
