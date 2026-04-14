@@ -240,9 +240,7 @@ function showCampusInfoModal(link) {
       <h3 style="margin:0 0 1rem;color:#667eea;">🏫 ${escapeHtml(link.university)} ${escapeHtml(link.campus)}</h3>
       <div class="campus-info-grid">
         <div class="campus-info-item"><span class="campus-info-label">👟 上履き</span><span>${escapeHtml(info.shoes||"—")}</span></div>
-        <div class="campus-info-item"><span class="campus-info-label">🚉 アクセス</span><span>${escapeHtml(info.access||"—")}</span></div>
-        <div class="campus-info-item"><span class="campus-info-label">🅿️ 駐車・駐輪</span><span>${escapeHtml(info.parking||"—")}</span></div>
-        <div class="campus-info-item"><span class="campus-info-label">🔄 再入場</span><span>${escapeHtml(info.reentry||"—")}</span></div>
+        <div class="campus-info-item"><span class="campus-info-label">🚉 アクセス</span><span>${escapeHtml(info.access||"—").replace(/\n/g,"<br>")}</span></div>
         <div class="campus-info-item"><span class="campus-info-label">🍼 授乳室等</span><span>${escapeHtml(info.babyRoom||"—")}</span></div>
         <div class="campus-info-item"><span class="campus-info-label">🍱 飲食持込</span><span>${escapeHtml(info.food||"—")}</span></div>
         <div class="campus-info-item campus-info-item--full">
