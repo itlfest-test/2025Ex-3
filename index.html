@@ -94,7 +94,7 @@
     </section>
 
     <section id="favorites-area" class="card hidden">
-      <h2>⭐ お気に入り</h2>
+      <h2>⭐ お気に入り <button class="page-help-btn" data-page="favorites" aria-label="このページについて">このページについて</button></h2>
       <div id="favorites-table-wrap">
         <table class="fav-table">
           <thead>
@@ -116,7 +116,7 @@
     </section>
 
     <section id="room-guide-area" class="card hidden">
-      <h2>🏫 教室案内</h2>
+      <h2>🏫 教室案内 <button class="page-help-btn" data-page="room-guide" aria-label="このページについて">このページについて</button></h2>
       <div class="room-guide-form">
         <div class="room-guide-fixed">
           <span class="room-guide-label">出発地</span>
@@ -150,7 +150,7 @@
     </section>
 
     <section id="story-area" class="card hidden">
-      <h2>📹 ストーリー</h2>
+      <h2>📹 ストーリー <button class="page-help-btn" data-page="story" aria-label="このページについて">このページについて</button></h2>
       <div id="story-list" class="story-grid"></div>
       <div id="story-empty" style="text-align:center;padding:40px 20px;color:#9ca3af;">
         <p style="font-size:1.4em;">🎬</p>
@@ -160,7 +160,7 @@
     </section>
 
     <section id="map-area" class="card hidden">
-      <h2>🗺️ キャンパスマップ</h2>
+      <h2>🗺️ キャンパスマップ <button class="page-help-btn" data-page="map" aria-label="このページについて">このページについて</button></h2>
       <div style="text-align:center;padding:60px 20px;background:#f9fafb;border-radius:8px;color:#6b7280;">
         <p style="font-size:1.2em;margin-bottom:8px;">🗺️</p>
         <p>マップ機能は準備中です</p>
@@ -169,7 +169,7 @@
     </section>
 
     <section id="info-area" class="card hidden">
-      <h2>ℹ️ 情報</h2>
+      <h2>ℹ️ 情報 <button class="page-help-btn" data-page="info" aria-label="このページについて">このページについて</button></h2>
       <div class="info-section">
         <h3>🔗 協力大学 学祭公式サイト</h3>
         <div id="links-list" class="links-list"></div>
@@ -194,6 +194,18 @@
       <div id="changelog-all"></div>
       <div class="modal-actions">
         <button id="changelogOk" class="btn primary-3d">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ページ説明モーダル -->
+  <div id="pageHelpModal" class="modal hidden">
+    <div class="modal-content" style="max-width:520px;">
+      <button class="modal-close" id="pageHelpClose">✕</button>
+      <h3 id="pageHelpTitle" style="margin:0 0 1rem;color:#667eea;"></h3>
+      <div id="pageHelpText" style="line-height:1.8;color:#4a5568;font-size:0.95rem;"></div>
+      <div class="modal-actions">
+        <button id="pageHelpOk" class="btn primary-3d">閉じる</button>
       </div>
     </div>
   </div>
