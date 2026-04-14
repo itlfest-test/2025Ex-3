@@ -7,6 +7,21 @@
     "sns": {
       "instagram": "@ITLFEST_2026",
       "x": "@Festival_iTL"
+    },
+    "campusInfo": {
+      "shoes":       "上履き不要",
+      "access":      "市ケ谷駅・四ツ谷駅より徒歩〇分（要確認）",
+      "parking":     "駐車場なし・駐輪場あり（要確認）",
+      "reentry":     "再入場可（要確認）",
+      "babyRoom":    "授乳室・多目的トイレあり（要確認）",
+      "payment": {
+        "cash":    true,
+        "ic":      false,
+        "credit":  false,
+        "qr":      false,
+        "note":    "決済手段は出展者により異なります（要確認）"
+      },
+      "food":        "飲食物の持ち込み可（要確認）"
     }
   },
   {
@@ -17,6 +32,21 @@
     "sns": {
       "instagram": "",
       "x": ""
+    },
+    "campusInfo": {
+      "shoes":       "上履き不要（要確認）",
+      "access":      "後楽園駅・春日駅より徒歩〇分（要確認）",
+      "parking":     "駐車場・駐輪場（要確認）",
+      "reentry":     "再入場可（要確認）",
+      "babyRoom":    "授乳室・多目的トイレ（要確認）",
+      "payment": {
+        "cash":    true,
+        "ic":      false,
+        "credit":  false,
+        "qr":      false,
+        "note":    "決済手段は出展者により異なります（要確認）"
+      },
+      "food":        "飲食物の持ち込み（要確認）"
     }
   },
   {
@@ -27,6 +57,21 @@
     "sns": {
       "instagram": "",
       "x": ""
+    },
+    "campusInfo": {
+      "shoes":       "上履き不要（要確認）",
+      "access":      "茗荷谷駅より徒歩〇分（要確認）",
+      "parking":     "駐車場・駐輪場（要確認）",
+      "reentry":     "再入場可（要確認）",
+      "babyRoom":    "授乳室・多目的トイレ（要確認）",
+      "payment": {
+        "cash":    true,
+        "ic":      false,
+        "credit":  false,
+        "qr":      false,
+        "note":    "決済手段は出展者により異なります（要確認）"
+      },
+      "food":        "飲食物の持ち込み（要確認）"
     }
   },
   {
@@ -37,6 +82,21 @@
     "sns": {
       "instagram": "",
       "x": ""
+    },
+    "campusInfo": {
+      "shoes":       "上履き不要（要確認）",
+      "access":      "多摩モノレール中央大学・明星大学駅より徒歩〇分（要確認）",
+      "parking":     "駐車場あり（要確認）",
+      "reentry":     "再入場可（要確認）",
+      "babyRoom":    "授乳室・多目的トイレあり（要確認）",
+      "payment": {
+        "cash":    true,
+        "ic":      false,
+        "credit":  false,
+        "qr":      false,
+        "note":    "決済手段は出展者により異なります（要確認）"
+      },
+      "food":        "飲食物の持ち込み（要確認）"
     }
   }
 ]
