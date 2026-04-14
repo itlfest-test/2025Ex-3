@@ -29,6 +29,9 @@ const CATEGORY_COLORS = {
   "その他":                           { bg: "rgba(209,213,219,0.35)", border: "#9ca3af", tag: "#374151" },
 };
 
+// 複数選択対応: チップの選択状態管理
+const chipSelections = {}; // { fieldId: Set<value> }
+
 function getCategoryColor(category) {
   if (!category) return CATEGORY_COLORS["その他"];
   if (CATEGORY_COLORS[category]) return CATEGORY_COLORS[category];
