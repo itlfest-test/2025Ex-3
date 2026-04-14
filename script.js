@@ -12,28 +12,21 @@ let festivalsData = [];
 let linksData     = [];
 let contactData   = null;
 
-// カテゴリ色定義（グループ順・色の濃さ順）
+// カテゴリ色定義
 const CATEGORY_COLORS = {
-  // ── 観る・聴く（オレンジ・ピンク系） ──
-  "エンタメ・お笑い":         { bg: "#fffaf5", border: "#ff7850", tag: "#ff7850" },
-  "ダンス系":                 { bg: "#fff5f5", border: "#ff7070", tag: "#ff7070" },
-  "音楽・パフォーマンス":     { bg: "#fff8f0", border: "#f0a050", tag: "#f0a050" },
-  "コスプレ・ファッション系": { bg: "#fff0f5", border: "#f080a0", tag: "#f080a0" },
-
-  // ── 知る・学ぶ（ブルー・水色系） ──
-  "講演・セミナー":           { bg: "#f5fcff", border: "#50a0ff", tag: "#50a0ff" },
-  "展示・発表":               { bg: "#f0faff", border: "#4090f0", tag: "#4090f0" },
-  "体験・実験（理工系）":     { bg: "#f8f8ff", border: "#7070f0", tag: "#7070f0" },
-  "体験・実験":               { bg: "#f8f8ff", border: "#7070f0", tag: "#7070f0" },
-  "相談・ワークショップ系":   { bg: "#f5faff", border: "#50b0f0", tag: "#50b0f0" },
-
-  // ── 楽しむ・巡る（グリーン・レモン系） ──
-  "飲食":                     { bg: "#f5fffa", border: "#3cbc8c", tag: "#3cbc8c" },
-  "物販":                     { bg: "#fafff5", border: "#80c060", tag: "#80c060" },
-  "アトラクション・ゲーム（参加型）": { bg: "#ffffef", border: "#b0b040", tag: "#b0b040" },
-
-  // ── 指定なし ──
-  "その他":                   { bg: "#f9f9f9", border: "#6b7280", tag: "#6b7280" },
+  "エンタメ・お笑い":                 { bg: "rgba(254,240,138,0.35)", border: "#fbbf24", tag: "#92400e" },
+  "音楽・パフォーマンス":             { bg: "rgba(196,181,253,0.35)", border: "#8b5cf6", tag: "#5b21b6" },
+  "展示・発表":                       { bg: "rgba(167,243,208,0.35)", border: "#34d399", tag: "#065f46" },
+  "体験・実験（理工系）":             { bg: "rgba(252,165,165,0.35)", border: "#f87171", tag: "#991b1b" },
+  "体験・実験":                       { bg: "rgba(252,165,165,0.35)", border: "#f87171", tag: "#991b1b" },
+  "講演・セミナー":                   { bg: "rgba(147,197,253,0.35)", border: "#60a5fa", tag: "#1e40af" },
+  "飲食":                             { bg: "rgba(253,186,116,0.35)", border: "#fb923c", tag: "#9a3412" },
+  "物販":                             { bg: "rgba(253,186,116,0.25)", border: "#f59e0b", tag: "#78350f" },
+  "ダンス系":                         { bg: "rgba(249,168,212,0.35)", border: "#f472b6", tag: "#9d174d" },
+  "コスプレ・ファッション系":         { bg: "rgba(249,168,212,0.25)", border: "#ec4899", tag: "#831843" },
+  "アトラクション・ゲーム（参加型）": { bg: "rgba(110,231,183,0.35)", border: "#10b981", tag: "#064e3b" },
+  "相談・ワークショップ系":           { bg: "rgba(165,180,252,0.35)", border: "#818cf8", tag: "#3730a3" },
+  "その他":                           { bg: "rgba(209,213,219,0.35)", border: "#9ca3af", tag: "#374151" },
 };
 
 function getCategoryColor(category) {
@@ -50,15 +43,17 @@ function getCategoryColor(category) {
 // ============================
 async function loadAllData() {
   try {
-    const [events, options, festivals, links, contact] = await Promise.all([
+    const [events, options, festivals, links, contact, rooms] = await Promise.all([
       fetch('data/events.json').then(r => r.json()),
       fetch('data/options.json').then(r => r.json()),
       fetch('data/festivals.json').then(r => r.json()),
       fetch('data/links.json').then(r => r.json()),
-      fetch('data/contact.json').then(r => r.json())
+      fetch('data/contact.json').then(r => r.json()),
+      fetch('data/rooms.json').then(r => r.json())
     ]);
     eventsData = events; optionsData = options;
     festivalsData = festivals; linksData = links; contactData = contact;
+    roomGuideData = rooms;
     return true;
   } catch (e) {
     console.error('データ読み込みエラー:', e);
@@ -239,8 +234,9 @@ function setupDescriptionButtons() {
         descModal?.classList.remove("hidden");
         return;
       } else if (type === "field") {
-        const val = getChipValue("field");
-        const fd  = optionsData?.fieldOptions?.find(f => f.value === val);
+        const vals = getChipValue("field");
+        const val  = vals.length === 1 ? vals[0] : "";
+        const fd   = optionsData?.fieldOptions?.find(f => f.value === val);
         title = fd ? fd.value : "分野について";
         text  = fd ? fd.description : "企画の学問分野を選択できます。";
       } else if (type === "university") {
@@ -302,6 +298,19 @@ function buildChipGroup(fieldId, options) {
   chipSelections[fieldId] = new Set();
   group.innerHTML = "";
 
+  // 「指定なし」ボタン
+  const allBtn = document.createElement("button");
+  allBtn.className     = "chip-btn active";
+  allBtn.type          = "button";
+  allBtn.dataset.value = "";
+  allBtn.textContent   = "指定なし";
+  allBtn.addEventListener("click", () => {
+    chipSelections[fieldId] = new Set();
+    group.querySelectorAll(".chip-btn").forEach(b => b.classList.remove("active"));
+    allBtn.classList.add("active");
+  });
+  group.appendChild(allBtn);
+
   options.forEach(opt => {
     const btn = document.createElement("button");
     btn.className     = "chip-btn";
@@ -320,13 +329,15 @@ function buildChipGroup(fieldId, options) {
     btn.addEventListener("click", () => {
       const val = btn.dataset.value;
       if (chipSelections[fieldId].has(val)) {
-        // もう一回押したら解除
         chipSelections[fieldId].delete(val);
         btn.classList.remove("active");
       } else {
         chipSelections[fieldId].add(val);
         btn.classList.add("active");
+        allBtn.classList.remove("active"); // 何か選んだら「指定なし」を外す
       }
+      // 何も選ばれていなければ「指定なし」を戻す
+      if (chipSelections[fieldId].size === 0) allBtn.classList.add("active");
     });
     group.appendChild(btn);
   });
@@ -654,48 +665,9 @@ function loadOptionsSafe() {
 }
 
 // ============================
-// 🏫 教室案内データ
+// 🏫 教室案内データ（data/rooms.jsonから読み込み）
 // ============================
-/*
-  ▼▼▼ キャンパス・建物・教室を書き足す場所 ▼▼▼
-
-  "キャンパスID": {
-    label: "〇〇大学 〇〇キャンパス",
-    buildings: {
-      "建物ID": {
-        label: "〇〇棟",
-        rooms: [
-          {
-            id:       "部屋ID（一意）",
-            label:    "1F 101教室",
-            desc:     "正門から〇〇を目指して...",
-            mapImage: "img/map_XXX.jpg"   // なければ ""
-          }
-        ]
-      }
-    }
-  }
-*/
-const roomGuideData = {
-  "campus-sample": {
-    label: "（サンプル）〇〇大学 〇〇キャンパス",
-    buildings: {
-      "bldg-a": {
-        label: "A棟",
-        rooms: [
-          { id:"a-101", label:"1F 101教室", desc:"正門を入り、まっすぐ進むとA棟が見えます。1階左手が101教室です。", mapImage:"" },
-          { id:"a-201", label:"2F 201教室", desc:"A棟1階の階段を上り、右手が201教室です。", mapImage:"" }
-        ]
-      },
-      "bldg-b": {
-        label: "B棟",
-        rooms: [
-          { id:"b-101", label:"1F 講義室1", desc:"正門を入り右手にある建物がB棟です。1階正面が講義室1です。", mapImage:"" }
-        ]
-      }
-    }
-  }
-};
+let roomGuideData = {};
 
 function setupRoomGuide() {
   const campusSel   = document.getElementById("room-campus");
