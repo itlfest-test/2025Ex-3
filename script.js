@@ -11,29 +11,23 @@ let optionsData   = null;
 let festivalsData = [];
 let linksData     = [];
 let contactData   = null;
+let changelogData = [];
 
-// カテゴリ色定義（グループ順・色の濃さ順）
+// カテゴリ色定義
 const CATEGORY_COLORS = {
-  // ── 観る・聴く（オレンジ・ピンク系） ──
-  "エンタメ・お笑い":         { bg: "#fffaf5", border: "#ff7850", tag: "#ff7850" },
-  "ダンス系":                 { bg: "#fff5f5", border: "#ff7070", tag: "#ff7070" },
-  "音楽・パフォーマンス":     { bg: "#fff8f0", border: "#f0a050", tag: "#f0a050" },
-  "コスプレ・ファッション系": { bg: "#fff0f5", border: "#f080a0", tag: "#f080a0" },
-
-  // ── 知る・学ぶ（ブルー・水色系） ──
-  "講演・セミナー":           { bg: "#f5fcff", border: "#50a0ff", tag: "#50a0ff" },
-  "展示・発表":               { bg: "#f0faff", border: "#4090f0", tag: "#4090f0" },
-  "体験・実験（理工系）":     { bg: "#f8f8ff", border: "#7070f0", tag: "#7070f0" },
-  "体験・実験":               { bg: "#f8f8ff", border: "#7070f0", tag: "#7070f0" },
-  "相談・ワークショップ系":   { bg: "#f5faff", border: "#50b0f0", tag: "#50b0f0" },
-
-  // ── 楽しむ・巡る（グリーン・レモン系） ──
-  "飲食":                     { bg: "#f5fffa", border: "#3cbc8c", tag: "#3cbc8c" },
-  "物販":                     { bg: "#fafff5", border: "#80c060", tag: "#80c060" },
-  "アトラクション・ゲーム（参加型）": { bg: "#ffffef", border: "#b0b040", tag: "#b0b040" },
-
-  // ── その他 ──
-  "その他":                   { bg: "#f9f9f9", border: "#6b7280", tag: "#6b7280" },
+  "エンタメ・お笑い":                 { bg: "rgba(254,240,138,0.35)", border: "#fbbf24", tag: "#92400e" },
+  "音楽・パフォーマンス":             { bg: "rgba(196,181,253,0.35)", border: "#8b5cf6", tag: "#5b21b6" },
+  "展示・発表":                       { bg: "rgba(167,243,208,0.35)", border: "#34d399", tag: "#065f46" },
+  "体験・実験（理工系）":             { bg: "rgba(252,165,165,0.35)", border: "#f87171", tag: "#991b1b" },
+  "体験・実験":                       { bg: "rgba(252,165,165,0.35)", border: "#f87171", tag: "#991b1b" },
+  "講演・セミナー":                   { bg: "rgba(147,197,253,0.35)", border: "#60a5fa", tag: "#1e40af" },
+  "飲食":                             { bg: "rgba(253,186,116,0.35)", border: "#fb923c", tag: "#9a3412" },
+  "物販":                             { bg: "rgba(253,186,116,0.25)", border: "#f59e0b", tag: "#78350f" },
+  "ダンス系":                         { bg: "rgba(249,168,212,0.35)", border: "#f472b6", tag: "#9d174d" },
+  "コスプレ・ファッション系":         { bg: "rgba(249,168,212,0.25)", border: "#ec4899", tag: "#831843" },
+  "アトラクション・ゲーム（参加型）": { bg: "rgba(110,231,183,0.35)", border: "#10b981", tag: "#064e3b" },
+  "相談・ワークショップ系":           { bg: "rgba(165,180,252,0.35)", border: "#818cf8", tag: "#3730a3" },
+  "その他":                           { bg: "rgba(209,213,219,0.35)", border: "#9ca3af", tag: "#374151" },
 };
 
 function getCategoryColor(category) {
@@ -50,17 +44,18 @@ function getCategoryColor(category) {
 // ============================
 async function loadAllData() {
   try {
-    const [events, options, festivals, links, contact, rooms] = await Promise.all([
+    const [events, options, festivals, links, contact, rooms, changelog] = await Promise.all([
       fetch('data/events.json').then(r => r.json()),
       fetch('data/options.json').then(r => r.json()),
       fetch('data/festivals.json').then(r => r.json()),
       fetch('data/links.json').then(r => r.json()),
       fetch('data/contact.json').then(r => r.json()),
-      fetch('data/rooms.json').then(r => r.json())
+      fetch('data/rooms.json').then(r => r.json()),
+      fetch('data/changelog.json').then(r => r.json())
     ]);
     eventsData = events; optionsData = options;
     festivalsData = festivals; linksData = links; contactData = contact;
-    roomGuideData = rooms;
+    roomGuideData = rooms; changelogData = changelog;
     return true;
   } catch (e) {
     console.error('データ読み込みエラー:', e);
@@ -102,6 +97,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try { setupRoomGuide();          } catch(e){ console.warn(e); }
   try { setupStory();              } catch(e){ console.warn(e); }
   try { setupSearchHelp();         } catch(e){ console.warn(e); }
+  try { setupChangelog();          } catch(e){ console.warn(e); }
 
   if (checkIfFiltersApplied()) onSearch();
   else renderResults(getAllEvents());
@@ -735,6 +731,70 @@ function setupRoomGuide() {
     resultEl?.classList.remove("hidden");
     resultEl?.scrollIntoView({ behavior:"smooth", block:"nearest" });
   });
+}
+
+// ============================
+// 📋 更新履歴
+// ============================
+function setupChangelog() {
+  const area = document.getElementById("changelog-area");
+  if (!area || !changelogData.length) return;
+
+  // 新しい順に並べる
+  const sorted = [...changelogData].reverse();
+  const latest = sorted[0];
+
+  // 最新バージョン番号バッジ
+  const versionBadge = `
+    <div class="changelog-version-badge">
+      <span class="changelog-version-num">v${escapeHtml(latest.version)}</span>
+      <span class="changelog-version-date">${escapeHtml(latest.date)}</span>
+    </div>
+  `;
+
+  // 最新5件のchangeをリスト化（バージョンをまたいでもOK）
+  const recentItems = [];
+  for (const entry of sorted) {
+    for (const change of entry.changes) {
+      recentItems.push({ version: entry.version, date: entry.date, text: change });
+      if (recentItems.length >= 5) break;
+    }
+    if (recentItems.length >= 5) break;
+  }
+
+  const recentHtml = recentItems.map(item =>
+    `<li class="changelog-item">${escapeHtml(item.text)}</li>`
+  ).join("");
+
+  area.innerHTML = `
+    ${versionBadge}
+    <ul class="changelog-list">${recentHtml}</ul>
+    <button class="changelog-more-btn" id="changelogMoreBtn">View More</button>
+  `;
+
+  // View More → 全件モーダル
+  document.getElementById("changelogMoreBtn")?.addEventListener("click", () => {
+    const allEl = document.getElementById("changelog-all");
+    if (allEl) {
+      allEl.innerHTML = sorted.map(entry => `
+        <div class="changelog-entry">
+          <div class="changelog-entry-header">
+            <span class="changelog-version-num">v${escapeHtml(entry.version)}</span>
+            <span class="changelog-version-date">${escapeHtml(entry.date)}</span>
+          </div>
+          <ul class="changelog-list">
+            ${entry.changes.map(c => `<li class="changelog-item">${escapeHtml(c)}</li>`).join("")}
+          </ul>
+        </div>
+      `).join("");
+    }
+    document.getElementById("changelogModal")?.classList.remove("hidden");
+  });
+
+  document.getElementById("changelogClose")?.addEventListener("click", () =>
+    document.getElementById("changelogModal")?.classList.add("hidden"));
+  document.getElementById("changelogOk")?.addEventListener("click", () =>
+    document.getElementById("changelogModal")?.classList.add("hidden"));
 }
 
 // ============================
