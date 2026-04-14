@@ -98,6 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try { setupStory();              } catch(e){ console.warn(e); }
   try { setupSearchHelp();         } catch(e){ console.warn(e); }
   try { setupChangelog();          } catch(e){ console.warn(e); }
+  try { setupPageHelp();           } catch(e){ console.warn(e); }
 
   if (checkIfFiltersApplied()) onSearch();
   else renderResults(getAllEvents());
@@ -180,6 +181,7 @@ function setupInfoPage() {
       const hasUrl  = link.url && link.url !== "";
       const hasInst = link.sns?.instagram && link.sns.instagram !== "";
       const hasX    = link.sns?.x && link.sns.x !== "";
+      const hasInfo = !!link.campusInfo;
       card.innerHTML = `
         <div class="link-card-title">${escapeHtml(link.university)}</div>
         <div class="link-card-campus">${escapeHtml(link.campus)}</div>
@@ -191,7 +193,13 @@ function setupInfoPage() {
           ${hasInst ? `<a href="https://instagram.com/${escapeHtml(link.sns.instagram).replace('@','')}" target="_blank" rel="noopener" class="sns-link">📷 ${escapeHtml(link.sns.instagram)}</a>` : ''}
           ${hasX    ? `<a href="https://x.com/${escapeHtml(link.sns.x).replace('@','')}" target="_blank" rel="noopener" class="sns-link">𝕏 ${escapeHtml(link.sns.x)}</a>` : ''}
         </div>` : ''}
+        ${hasInfo ? `<button class="campus-info-btn" type="button">🏫 キャンパス情報</button>` : ''}
       `;
+      if (hasInfo) {
+        card.querySelector(".campus-info-btn").addEventListener("click", () => {
+          showCampusInfoModal(link);
+        });
+      }
       linksList.appendChild(card);
     });
   }
@@ -210,6 +218,46 @@ function setupInfoPage() {
       ${line ? `<div class="contact-item"><span class="contact-label">💬 公式LINE</span><a href="${escapeHtml(line.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(line.id)}</a></div>` : ''}
     `;
   }
+}
+
+function showCampusInfoModal(link) {
+  const info = link.campusInfo;
+  if (!info) return;
+  const pay = info.payment || {};
+  const payItems = [
+    pay.cash   ? "💴 現金" : null,
+    pay.ic     ? "🚃 ICカード" : null,
+    pay.credit ? "💳 クレジットカード" : null,
+    pay.qr     ? "📱 スマホ決済（QR）" : null,
+  ].filter(Boolean);
+
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.style.zIndex = "250";
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width:480px;">
+      <button class="modal-close" id="campusInfoClose">✕</button>
+      <h3 style="margin:0 0 1rem;color:#667eea;">🏫 ${escapeHtml(link.university)} ${escapeHtml(link.campus)}</h3>
+      <div class="campus-info-grid">
+        <div class="campus-info-item"><span class="campus-info-label">👟 上履き</span><span>${escapeHtml(info.shoes||"—")}</span></div>
+        <div class="campus-info-item"><span class="campus-info-label">🚉 アクセス</span><span>${escapeHtml(info.access||"—")}</span></div>
+        <div class="campus-info-item"><span class="campus-info-label">🅿️ 駐車・駐輪</span><span>${escapeHtml(info.parking||"—")}</span></div>
+        <div class="campus-info-item"><span class="campus-info-label">🔄 再入場</span><span>${escapeHtml(info.reentry||"—")}</span></div>
+        <div class="campus-info-item"><span class="campus-info-label">🍼 授乳室等</span><span>${escapeHtml(info.babyRoom||"—")}</span></div>
+        <div class="campus-info-item"><span class="campus-info-label">🍱 飲食持込</span><span>${escapeHtml(info.food||"—")}</span></div>
+        <div class="campus-info-item campus-info-item--full">
+          <span class="campus-info-label">💳 使える決済</span>
+          <span>${payItems.length ? payItems.join("・") : "現金のみ"}${pay.note ? `<br><small style="color:#9ca3af;">${escapeHtml(pay.note)}</small>` : ""}</span>
+        </div>
+      </div>
+      <div class="modal-actions"><button class="btn primary-3d" id="campusInfoOk">閉じる</button></div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  const close = () => modal.remove();
+  modal.querySelector("#campusInfoClose").addEventListener("click", close);
+  modal.querySelector("#campusInfoOk").addEventListener("click", close);
+  modal.addEventListener("click", e => { if (e.target === modal) close(); });
 }
 
 // ============================
@@ -494,44 +542,80 @@ function toggleFavorite(ev) {
 // ============================
 // ⭐ 時系列テーブル
 // ============================
+
+// 削除取り消し用一時セット（ページ遷移までは見た目だけ残す）
+const pendingRemoveFavs = new Set();
+
 function renderFavoritesTable() {
   const tbody = document.getElementById("favorites-table-body");
   if (!tbody) return;
   tbody.innerHTML = "";
   const favs = loadFavoritesArray();
-  if (favs.length === 0) {
+
+  // 表示対象: 確定済み + pending（グレー表示）
+  const displayIds = [...new Set([...favs, ...pendingRemoveFavs])];
+
+  if (displayIds.length === 0) {
     tbody.innerHTML = '<tr><td colspan="4" class="muted" style="padding:16px;text-align:center;">お気に入りはまだありません。</td></tr>';
     return;
   }
   const weekdays = ["日","月","火","水","木","金","土"];
   const all = getAllEvents();
-  favs.map(id => all.find(x => x.id === id)).filter(Boolean)
+
+  displayIds
+    .map(id => all.find(x => x.id === id))
+    .filter(Boolean)
     .sort((a,b) => {
       const as = evStartDateTime(a), bs = evStartDateTime(b);
       if (!as && !bs) return 0; if (!as) return 1; if (!bs) return -1;
       return new Date(as) - new Date(bs);
     })
     .forEach(ev => {
-      const s = evStartDateTime(ev);
+      const isPending = pendingRemoveFavs.has(ev.id);
+      const s   = evStartDateTime(ev);
+      const e   = evEndDateTime(ev);
       let dateLabel = "—", timeLabel = "—";
       if (s) {
         try {
-          const d = new Date(s);
-          dateLabel = `${d.getMonth()+1}/${d.getDate()}（${weekdays[d.getDay()]}）`;
-          timeLabel = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        } catch(e){}
+          const ds = new Date(s);
+          dateLabel = `${ds.getMonth()+1}/${ds.getDate()}（${weekdays[ds.getDay()]}）`;
+          const sh = String(ds.getHours()).padStart(2,'0');
+          const sm = String(ds.getMinutes()).padStart(2,'0');
+          timeLabel = `${sh}:${sm}`;
+          if (e) {
+            const de = new Date(e);
+            timeLabel += `～${String(de.getHours()).padStart(2,'0')}:${String(de.getMinutes()).padStart(2,'0')}`;
+          }
+        } catch(err){}
       }
       const tr = document.createElement("tr");
+      if (isPending) tr.style.opacity = "0.4";
       tr.innerHTML = `
         <td class="fav-table-date">${escapeHtml(dateLabel)}</td>
-        <td class="fav-table-time">${escapeHtml(timeLabel)}</td>
+        <td class="fav-table-time" style="white-space:nowrap;">${escapeHtml(timeLabel)}</td>
         <td class="fav-table-name">
           <a href="events_detail.html?id=${ev.id}" class="fav-table-link">${escapeHtml(evTitle(ev))}</a>
           <div class="fav-table-uni">${escapeHtml(evUniversity(ev))}</div>
         </td>
-        <td><button class="fav-btn fav-table-remove" type="button" aria-label="解除">⭐</button></td>
+        <td><button class="fav-btn fav-table-remove ${isPending ? "" : "active"}" type="button" aria-label="解除" style="position:static;">⭐</button></td>
       `;
-      tr.querySelector(".fav-table-remove").addEventListener("click", () => toggleFavorite(ev));
+      tr.querySelector(".fav-table-remove").addEventListener("click", () => {
+        if (isPending) {
+          // 取り消し: pending から外して再登録
+          pendingRemoveFavs.delete(ev.id);
+          const favs2 = loadFavoritesArray();
+          if (!favs2.includes(ev.id)) { favs2.unshift(ev.id); saveFavoritesArray(favs2); }
+        } else {
+          // 削除: pendingに入れてlocalStorageからは即削除、見た目だけ残す
+          pendingRemoveFavs.add(ev.id);
+          const favs2 = loadFavoritesArray().filter(x => x !== ev.id);
+          saveFavoritesArray(favs2);
+        }
+        renderFavoritesTable();
+        renderHistory();
+        if (checkIfFiltersApplied()) onSearch();
+        else renderResults(getAllEvents());
+      });
       tbody.appendChild(tr);
     });
 }
@@ -731,6 +815,69 @@ function setupRoomGuide() {
     resultEl?.classList.remove("hidden");
     resultEl?.scrollIntoView({ behavior:"smooth", block:"nearest" });
   });
+}
+
+// ============================
+// ❓ ページ説明ボタン
+// ============================
+// ▼▼▼ 各ページの説明文を編集する場所 ▼▼▼
+const PAGE_HELP_TEXT = {
+  "search": {
+    title: "🔍 企画を探す",
+    text: `こんにちは！iTLFest.2026年度実行委員会と、同じく中央大学国際情報学部のサークルとして技術提供をしたC3です！
+
+本サイトは、複数の学祭で出展する各ブースについて、来場者の皆様に魅力を事前により知っていただき、学祭を楽しんでもらうことを目標に作成しました。
+
+メインのコンテンツは、最初に表示されている「企画を探す」機能です！こちらでは、大学やカテゴリ等を絞って検索できるほか、何も指定せず検索すると企画を一覧で見ることができます！
+
+ここでは文字情報のみですが、下のメニューバーから「ストーリー」を選択すると、各企画担当者による説明を流し見できるようになっています！
+
+また、検索条件については「？」ボタンから説明を確認できます。`
+  },
+  "favorites": {
+    title: "⭐ お気に入り",
+    text: `こちらはお気に入り登録した企画を一覧で表示する画面です！日付・時間順に表示されるようになっています。誤ってお気に入りから削除してしまった企画も「履歴」から再登録できます。また、横のゴミ箱マークから履歴を削除することもできます。`
+  },
+  "room-guide": {
+    title: "🏫 教室案内",
+    text: `こちらは教室を案内する画面です！協力いただけるキャンパスや教室の情報が定まり次第追加します。また、最終的にはフロアマップとともに表示する予定です。`
+  },
+  "story": {
+    title: "📹 ストーリー",
+    text: `こちらは企画概要を担当者が楽しく説明してくれる画面です。後々ここにコンテンツが追加され、Youtubeのショート動画のように流して一気見できるコンテンツにする予定です。`
+  },
+  "map": {
+    title: "🗺️ キャンパスマップ",
+    text: `こちらは当サイトを開発したiTLFest.実行委員会とC3の本拠地、中央大学市谷田町キャンパスの周辺の魅力をまとめた地図を見られる画面です。
+
+東京シティガイド検定と呼ばれる、都のガイド検定資格を持つメンバーがすべて自ら選定した魅力のスポットたちを是非ご覧ください。`
+  },
+  "info": {
+    title: "ℹ️ 情報",
+    text: `こちらは情報ページです。協力いただいた大学・キャンパスの公式サイト・SNSを一覧で表示しています。当サイトに関して、及びiTLFest.2026に関してお問い合わせがありましたらInstagram, X, 公式LINE等からお願いいたします。`
+  }
+};
+
+function setupPageHelp() {
+  const modal    = document.getElementById("pageHelpModal");
+  const titleEl  = document.getElementById("pageHelpTitle");
+  const textEl   = document.getElementById("pageHelpText");
+
+  document.querySelectorAll(".page-help-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const page = btn.dataset.page;
+      const data = PAGE_HELP_TEXT[page];
+      if (!data) return;
+      if (titleEl) titleEl.textContent = data.title;
+      if (textEl)  textEl.innerHTML = data.text.split("\n").map(line =>
+        line.trim() === "" ? "<br>" : `<p style="margin:0 0 0.8em;">${escapeHtml(line)}</p>`
+      ).join("");
+      modal?.classList.remove("hidden");
+    });
+  });
+
+  document.getElementById("pageHelpClose")?.addEventListener("click", () => modal?.classList.add("hidden"));
+  document.getElementById("pageHelpOk")?.addEventListener("click",    () => modal?.classList.add("hidden"));
 }
 
 // ============================
