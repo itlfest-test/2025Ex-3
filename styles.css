@@ -119,7 +119,7 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
   background:#fff;border-radius:2px;
 }
 
-/* オーバーレイ: 常にDOMにあるがpointer-eventsで制御 */
+/* オーバーレイ: pointer-eventsのみで制御（display切り替えなし） */
 .hamburger-overlay{
   position:fixed;inset:0;
   background:rgba(0,0,0,0.4);
@@ -127,8 +127,6 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
   opacity:0;
   pointer-events:none;
   transition:opacity .25s;
-  /* スマホ以外では完全に無効 */
-  display:none;
 }
 .hamburger-overlay.open{opacity:1;pointer-events:auto;}
 
@@ -157,7 +155,6 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
 @media(max-width:600px){
   .bottom-nav{display:none !important;}
   .hamburger-toggle{display:flex;}
-  .hamburger-overlay{display:block;}
   .hamburger-menu{display:block;}
   body{padding-bottom:calc(env(safe-area-inset-bottom) + 20px);}
 }
@@ -251,6 +248,19 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
 
 /* 教室案内 */
 select.options{width:100%;padding:10px;border-radius:10px;border:1px solid #d0d7e1;background:#fff;font-size:0.95rem;appearance:none;}
+
+/* 更新履歴 */
+.changelog-version-badge{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.changelog-version-num{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-weight:700;font-size:0.95rem;padding:4px 12px;border-radius:999px;}
+.changelog-version-date{color:var(--muted);font-size:0.88rem;}
+.changelog-list{margin:0 0 12px;padding-left:1.4em;list-style:none;}
+.changelog-item{position:relative;padding:4px 0;font-size:0.9rem;color:#374151;line-height:1.6;}
+.changelog-item::before{content:"・";position:absolute;left:-1.2em;color:#667eea;}
+.changelog-more-btn{background:transparent;border:1.5px solid #667eea;color:#667eea;border-radius:999px;padding:6px 20px;font-size:0.88rem;font-weight:600;cursor:pointer;transition:all .15s ease;}
+.changelog-more-btn:hover{background:#667eea;color:#fff;}
+.changelog-entry{margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid #f0f0f0;}
+.changelog-entry:last-child{border-bottom:none;margin-bottom:0;}
+.changelog-entry-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .room-result-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:16px;}
 .room-result-title{font-weight:700;color:#1e3a8a;margin-bottom:8px;font-size:1rem;}
 .room-result-desc{color:#374151;line-height:1.7;margin-bottom:12px;}
