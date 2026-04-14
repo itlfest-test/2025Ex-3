@@ -1,3 +1,6 @@
+/* ダークモード無効化 */
+:root { color-scheme: only light; }
+
 :root{--bg:#f6f8fb;--card:#ffffff;--accent:#1976d2;--accent-dark:#145ea8;--muted:#6b7280;--radius:12px;--shadow-1:0 6px 14px rgba(16,24,40,0.06);}
 *{box-sizing:border-box;}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji","Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",Roboto,sans-serif;background:linear-gradient(180deg,#f9fbff 0%,var(--bg) 100%);color:#111827;-webkit-font-smoothing:antialiased;padding-bottom:calc(env(safe-area-inset-bottom) + 90px);}
@@ -248,6 +251,20 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
 
 /* 教室案内 */
 select.options{width:100%;padding:10px;border-radius:10px;border:1px solid #d0d7e1;background:#fff;font-size:0.95rem;appearance:none;}
+
+/* ページ説明ボタン */
+.page-help-btn{display:inline-flex;align-items:center;background:transparent;border:1.5px solid #667eea;color:#667eea;border-radius:999px;padding:3px 12px;font-size:0.78rem;font-weight:600;cursor:pointer;margin-left:8px;transition:all .15s ease;vertical-align:middle;}
+.page-help-btn:hover{background:#667eea;color:#fff;}
+
+/* キャンパス情報ボタン */
+.campus-info-btn{display:inline-block;margin-top:10px;background:transparent;border:1.5px solid #667eea;color:#667eea;border-radius:8px;padding:6px 14px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all .15s ease;width:100%;}
+.campus-info-btn:hover{background:#667eea;color:#fff;}
+
+/* キャンパス情報モーダル内グリッド */
+.campus-info-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:16px;}
+.campus-info-item{display:flex;flex-direction:column;gap:3px;background:#f7fafc;border-radius:8px;padding:10px 12px;}
+.campus-info-item--full{grid-column:1/-1;}
+.campus-info-label{font-weight:700;color:#4a5568;font-size:0.82rem;}
 
 /* 更新履歴 */
 .changelog-version-badge{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
