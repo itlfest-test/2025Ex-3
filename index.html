@@ -179,7 +179,24 @@
         <h3>📧 お問い合わせ</h3>
         <div id="contact-info" class="contact-info"></div>
       </div>
+      <hr style="margin:2rem 0;">
+      <div class="info-section">
+        <h3>📋 更新履歴</h3>
+        <div id="changelog-area"></div>
+      </div>
     </section>
+
+  <!-- 更新履歴 全件モーダル -->
+  <div id="changelogModal" class="modal hidden">
+    <div class="modal-content" style="max-width:560px;">
+      <button class="modal-close" id="changelogClose">✕</button>
+      <h3 style="margin:0 0 1rem;color:#667eea;">📋 更新履歴 全件</h3>
+      <div id="changelog-all"></div>
+      <div class="modal-actions">
+        <button id="changelogOk" class="btn primary-3d">閉じる</button>
+      </div>
+    </div>
+  </div>
 
   </div><!-- /.container -->
 
