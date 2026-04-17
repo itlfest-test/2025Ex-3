@@ -6,47 +6,103 @@
   <title>イベント詳細 - 学祭イベント検索</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    .detail-wrap{max-width:720px;margin:0 auto;padding:16px 16px calc(env(safe-area-inset-bottom) + 32px);}
-    .detail-topbar{margin-bottom:20px;}
-    .detail-card{background:white;border-radius:12px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.08);}
-    .detail-title{font-size:1.8rem;font-weight:800;color:#1e40af;margin:0 0 8px;line-height:1.3;}
-    .detail-subtitle{font-size:1rem;color:#666;margin:0 0 20px;}
+    :root{
+      --detail-bg:#f6f8fb;--detail-card:#fff;--detail-text:#1f2937;
+      --detail-muted:#6b7280;--detail-section-bg:#f3f4f6;--detail-desc-bg:#f9fafb;
+      --detail-border:#e5e7eb;--detail-title:#1e40af;
+    }
+    [data-theme="dark"]{
+      --detail-bg:#0f172a;--detail-card:#1e293b;--detail-text:#e2e8f0;
+      --detail-muted:#94a3b8;--detail-section-bg:#273449;--detail-desc-bg:#1e293b;
+      --detail-border:#334155;--detail-title:#93c5fd;
+    }
+    @media(prefers-color-scheme:dark){
+      body:not([data-theme="light"]){
+        --detail-bg:#0f172a;--detail-card:#1e293b;--detail-text:#e2e8f0;
+        --detail-muted:#94a3b8;--detail-section-bg:#273449;--detail-desc-bg:#1e293b;
+        --detail-border:#334155;--detail-title:#93c5fd;
+      }
+      body:not([data-theme="light"]) #share-modal-inner,
+      body:not([data-theme="light"]) #feedback-modal-inner{background:#1e293b;color:#e2e8f0;}
+      body:not([data-theme="light"]) .share-option{background:#273449;border-color:#334155;color:#e2e8f0;}
+      body:not([data-theme="light"]) .share-cancel{background:#273449;color:#94a3b8;}
+      body:not([data-theme="light"]) #share-modal h3,
+      body:not([data-theme="light"]) #feedback-modal-inner h3{color:#e2e8f0;}
+      body:not([data-theme="light"]) .feedback-link{background:#273449;border-color:#334155;color:#e2e8f0;}
+    }
+    body{background:var(--detail-bg);color:var(--detail-text);transition:background .2s,color .2s;margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji","Noto Sans JP",sans-serif;}
+    .detail-wrap{max-width:720px;margin:0 auto;padding:16px 16px calc(env(safe-area-inset-bottom)+48px);}
+    .detail-topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+    .detail-card{background:var(--detail-card);border-radius:12px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.08);}
+    .detail-title{font-size:1.8rem;font-weight:800;color:var(--detail-title);margin:0 0 8px;line-height:1.3;}
+    .detail-subtitle{font-size:1rem;color:var(--detail-muted);margin:0 0 20px;}
     .detail-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
-    .detail-tag{padding:5px 12px;border-radius:999px;font-size:0.85rem;font-weight:600;}
+    .detail-tag{padding:5px 12px;border-radius:999px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:opacity .15s,transform .15s;display:inline-block;}
+    .detail-tag:hover{opacity:0.75;transform:scale(1.05);}
     .detail-tag.uni{background:#dbeafe;color:#1e40af;}
     .detail-tag.cat{background:#fef3c7;color:#92400e;}
     .detail-tag.field{background:#e0e7ff;color:#4338ca;}
-    .detail-section{background:#f3f4f6;padding:16px;border-radius:10px;margin-bottom:16px;}
-    .detail-section-label{font-weight:700;color:#374151;margin-bottom:8px;font-size:0.95rem;}
-    .detail-section-value{color:#1f2937;line-height:1.7;}
-    .detail-desc{background:#f9fafb;padding:20px;border-radius:10px;margin-bottom:20px;}
-    .detail-desc-label{font-weight:700;color:#374151;margin-bottom:12px;font-size:1.1rem;}
-    .detail-desc-text{color:#1f2937;line-height:1.9;white-space:pre-wrap;}
-    /* 写真ギャラリー */
+    .detail-section{background:var(--detail-section-bg);padding:16px;border-radius:10px;margin-bottom:16px;}
+    .detail-section-label{font-weight:700;color:var(--detail-muted);margin-bottom:8px;font-size:0.88rem;}
+    .detail-section-value{color:var(--detail-text);line-height:1.7;}
+    .detail-desc{background:var(--detail-desc-bg);padding:20px;border-radius:10px;margin-bottom:20px;border:1px solid var(--detail-border);}
+    .detail-desc-label{font-weight:700;color:var(--detail-text);margin-bottom:12px;font-size:1rem;}
+    .detail-desc-text{color:var(--detail-text);line-height:1.9;white-space:pre-wrap;}
+    /* 公式アカウント欄 */
+    .detail-sns{background:var(--detail-section-bg);padding:16px;border-radius:10px;margin-bottom:20px;}
+    .detail-sns-label{font-weight:700;color:var(--detail-muted);margin-bottom:10px;font-size:0.88rem;}
+    .detail-sns-links{display:flex;flex-wrap:wrap;gap:8px;}
+    .detail-sns-link{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;font-size:0.88rem;font-weight:600;text-decoration:none;border:1.5px solid var(--detail-border);color:var(--detail-text);transition:all .15s;}
+    .detail-sns-link:hover{border-color:#667eea;color:#667eea;}
+    .detail-sns-empty{color:var(--detail-muted);font-size:0.88rem;}
+    /* 写真 */
     .detail-photos{margin-bottom:20px;}
-    .detail-photos-label{font-weight:700;color:#374151;margin-bottom:10px;font-size:1.1rem;}
+    .detail-photos-label{font-weight:700;color:var(--detail-text);margin-bottom:10px;font-size:1rem;}
     .detail-photos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
-    .detail-photo{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;}
+    .detail-photo{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;cursor:pointer;transition:transform .2s,box-shadow .2s;}
     .detail-photo:hover{transform:scale(1.03);box-shadow:0 4px 16px rgba(0,0,0,0.15);}
     /* 写真拡大モーダル */
-    #photo-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:300;padding:16px;}
+    #photo-modal{position:fixed;inset:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;z-index:300;padding:16px;}
     #photo-modal img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:8px;}
     #photo-modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.15);border:none;color:white;font-size:1.5rem;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-    .detail-back-btn{display:inline-block;background:#2563eb;color:white;padding:12px 32px;border-radius:8px;text-decoration:none;font-weight:600;text-align:center;transition:background 0.2s;}
+    /* ボタン類 */
+    .detail-back-btn{display:inline-flex;align-items:center;gap:6px;background:#2563eb;color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;font-size:0.9rem;transition:background .2s;}
     .detail-back-btn:hover{background:#1d4ed8;}
-    @media(max-width:480px){
-      .detail-title{font-size:1.4rem;}
-      .detail-photos-grid{grid-template-columns:1fr 1fr;}
-      .detail-card{padding:16px;}
-    }
+    .share-btn{background:transparent;border:1.5px solid var(--detail-border);color:var(--detail-muted);border-radius:999px;padding:7px 16px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
+    .share-btn:hover{border-color:#667eea;color:#667eea;}
+    /* 提案ボタン（右上固定） */
+    .feedback-btn{position:fixed;top:12px;right:12px;z-index:150;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:999px;padding:7px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;box-shadow:0 2px 10px rgba(102,126,234,0.4);transition:all .15s;}
+    .feedback-btn:hover{transform:scale(1.05);}
+    /* シェアモーダル */
+    #share-modal{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:none;align-items:flex-end;justify-content:center;z-index:250;}
+    #share-modal.open{display:flex;}
+    #share-modal-inner{background:#fff;border-radius:20px 20px 0 0;padding:20px 20px calc(env(safe-area-inset-bottom)+20px);width:100%;max-width:480px;}
+    #share-modal-inner h3{margin:0 0 16px;font-size:1rem;color:#374151;}
+    .share-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+    .share-option{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border-radius:12px;background:#f9fafb;border:1.5px solid #e5e7eb;cursor:pointer;transition:all .15s;font-size:0.78rem;font-weight:600;color:#374151;}
+    .share-option:hover{border-color:#667eea;color:#667eea;background:#eff6ff;}
+    .share-option-icon{font-size:1.4rem;}
+    .share-cancel{width:100%;padding:12px;border:none;border-radius:10px;background:#f3f4f6;color:#6b7280;font-weight:600;cursor:pointer;font-size:0.9rem;}
+    /* 提案モーダル */
+    #feedback-modal{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:none;align-items:center;justify-content:center;z-index:260;padding:16px;}
+    #feedback-modal.open{display:flex;}
+    #feedback-modal-inner{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:480px;position:relative;}
+    #feedback-modal-inner h3{margin:0 0 8px;color:#667eea;}
+    .feedback-link{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:10px;background:#f9fafb;border:1.5px solid #e5e7eb;text-decoration:none;color:#374151;font-weight:600;font-size:0.9rem;margin-bottom:8px;transition:all .15s;}
+    .feedback-link:hover{border-color:#667eea;color:#667eea;}
+    .feedback-close{position:absolute;right:12px;top:10px;border:none;background:transparent;font-size:18px;cursor:pointer;}
+    @media(max-width:480px){.detail-title{font-size:1.4rem;}.detail-photos-grid{grid-template-columns:1fr 1fr;}.detail-card{padding:16px;}.feedback-btn{font-size:0.72rem;padding:6px 10px;}}
   </style>
 </head>
 <body>
+  <!-- 提案ボタン（右上固定） -->
+  <button class="feedback-btn" id="feedbackBtn">💡 機能の提案・廃止</button>
+
   <div class="detail-wrap">
     <div class="detail-topbar">
-      <a href="index.html" id="back-to-search" style="color:#2563eb;text-decoration:none;font-size:14px;">← 検索ページに戻る</a>
+      <a href="index.html" id="back-to-search" class="detail-back-btn">← 戻る</a>
+      <button class="share-btn" id="shareBtn">🔗 シェア</button>
     </div>
-
     <div id="event-detail-content" class="detail-card">
       <div style="text-align:center;padding:40px;color:#666;">読み込み中...</div>
     </div>
@@ -58,12 +114,41 @@
     <img id="photo-modal-img" src="" alt="拡大写真">
   </div>
 
+  <!-- シェアモーダル -->
+  <div id="share-modal">
+    <div id="share-modal-inner">
+      <h3>🔗 シェア</h3>
+      <div class="share-options">
+        <button class="share-option" id="share-x"><span class="share-option-icon">𝕏</span>X (Twitter)</button>
+        <button class="share-option" id="share-line"><span class="share-option-icon">💬</span>LINE</button>
+        <button class="share-option" id="share-copy"><span class="share-option-icon">📋</span>URLコピー</button>
+      </div>
+      <button class="share-cancel" id="share-cancel">キャンセル</button>
+    </div>
+  </div>
+
+  <!-- 提案モーダル -->
+  <div id="feedback-modal">
+    <div id="feedback-modal-inner">
+      <button class="feedback-close" id="feedback-close">✕</button>
+      <h3>💡 機能の提案・廃止</h3>
+      <p style="color:#6b7280;font-size:0.9rem;margin:0 0 16px;">ご意見・ご要望はSNSまたはLINEからお気軽にどうぞ！</p>
+      <a class="feedback-link" href="https://x.com/Festival_iTL" target="_blank" rel="noopener">𝕏 X (Twitter) @Festival_iTL</a>
+      <a class="feedback-link" href="https://instagram.com/ITLFEST_2025" target="_blank" rel="noopener">📷 Instagram @ITLFEST_2026</a>
+      <a class="feedback-link" href="https://lin.ee/rrxrnLv" target="_blank" rel="noopener">💬 公式LINE @513fripz</a>
+    </div>
+  </div>
+
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const eventId   = urlParams.get('id');
+    // ダークモード: OSに追従 + localStorageで上書き可
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) document.body.setAttribute('data-theme', savedTheme);
+
+    const urlParams  = new URLSearchParams(window.location.search);
+    const eventId    = urlParams.get('id');
+    let currentEvent = null;
 
     // 戻るボタンに検索条件を保持
-    const backBtn = document.getElementById('back-to-search');
     try {
       const savedFilters = localStorage.getItem('searchFilters');
       if (savedFilters) {
@@ -73,35 +158,27 @@
         if (filters.category)   params.set('cat',   filters.category);
         if (filters.field)      params.set('field', filters.field);
         if (filters.date)       params.set('date',  filters.date);
-        if (params.toString())  backBtn.href = `index.html?${params.toString()}`;
+        if (params.toString()) document.getElementById('back-to-search').href = `index.html?${params.toString()}`;
       }
     } catch(e){}
 
     if (!eventId) {
-      document.getElementById('event-detail-content').innerHTML = `
-        <div style="text-align:center;padding:40px;color:#c33;">
-          <h2>エラー</h2><p>イベントIDが指定されていません。</p>
-          <a href="index.html" style="color:#2563eb;">検索ページに戻る</a>
-        </div>`;
+      document.getElementById('event-detail-content').innerHTML =
+        '<div style="text-align:center;padding:40px;color:#c33;"><h2>エラー</h2><p>IDが指定されていません。</p><a href="index.html" style="color:#2563eb;">戻る</a></div>';
     } else {
       loadEventDetail(eventId);
     }
 
     async function loadEventDetail(id) {
       try {
-        const response = await fetch('data/events.json');
-        const events   = await response.json();
-        const event    = events.find(e => e.id == id);
-
+        const events = await fetch('data/events.json').then(r => r.json());
+        const event  = events.find(e => e.id == id);
         if (!event) {
-          document.getElementById('event-detail-content').innerHTML = `
-            <div style="text-align:center;padding:40px;color:#c33;">
-              <h2>イベントが見つかりません</h2>
-              <p>指定されたイベント（ID: ${id}）は存在しません。</p>
-              <a href="index.html" style="color:#2563eb;">検索ページに戻る</a>
-            </div>`;
+          document.getElementById('event-detail-content').innerHTML =
+            '<div style="text-align:center;padding:40px;color:#c33;"><h2>見つかりません</h2><a href="index.html" style="color:#2563eb;">戻る</a></div>';
           return;
         }
+        currentEvent = event;
 
         const name        = event.name        || event["企画名"]      || "(無題)";
         const subtitle    = event.subtitle    || event["サブタイトル"] || "";
@@ -109,67 +186,87 @@
         const university  = event.university  || event["大学"]        || "";
         const category    = event.category    || event["カテゴリ"]     || "";
         const field       = event.field       || event["分野"]        || "";
-        const startDt     = event.startDatetime || event.start_datetime || event["start_datetime"] || "";
-        const endDt       = event.endDatetime   || event.end_datetime   || event["end_datetime"]   || "";
+        const startDt     = event.startDatetime || event.start_datetime || "";
+        const endDt       = event.endDatetime   || event.end_datetime   || "";
         const location    = event.location    || event["場所"]        || "";
-        // 写真: images（配列）またはimage（単一）
         const images      = event.images || (event.image ? [event.image] : []);
+
+        // ▼▼▼ SNSアカウントはevents.jsonの各エントリに "sns" フィールドを追加してください ▼▼▼
+        // 例: "sns": { "instagram": "@xxx", "x": "@xxx", "line": "https://lin.ee/xxx", "youtube": "https://...", "website": "https://..." }
+        const sns = event.sns || {};
+
+        document.title = `${name} - 学祭イベント検索`;
 
         // 日時フォーマット
         let dateTimeStr = "";
         if (startDt) {
           try {
-            const start    = new Date(startDt);
-            const weekdays = ["日","月","火","水","木","金","土"];
-            const sh = String(start.getHours()).padStart(2,'0');
-            const sm = String(start.getMinutes()).padStart(2,'0');
-            dateTimeStr = `${start.getFullYear()}年${start.getMonth()+1}月${start.getDate()}日（${weekdays[start.getDay()]}） ${sh}:${sm}`;
+            const s = new Date(startDt);
+            const w = ["日","月","火","水","木","金","土"];
+            dateTimeStr = `${s.getFullYear()}年${s.getMonth()+1}月${s.getDate()}日（${w[s.getDay()]}） ${pad(s.getHours())}:${pad(s.getMinutes())}`;
             if (endDt) {
-              const end = new Date(endDt);
-              dateTimeStr += `～${String(end.getHours()).padStart(2,'0')}:${String(end.getMinutes()).padStart(2,'0')}`;
+              const e = new Date(endDt);
+              dateTimeStr += `～${pad(e.getHours())}:${pad(e.getMinutes())}`;
             }
           } catch(e){ dateTimeStr = startDt; }
         }
 
-        // 写真HTML
-        const photosHtml = images.length > 0 ? `
+        const photosHtml = images.length ? `
           <div class="detail-photos">
             <div class="detail-photos-label">📷 写真</div>
             <div class="detail-photos-grid">
-              ${images.map(src => `<img class="detail-photo" src="${escapeHtml(src)}" alt="イベント写真" loading="lazy">`).join('')}
+              ${images.map(src=>`<img class="detail-photo" src="${esc(src)}" alt="イベント写真" loading="lazy">`).join('')}
             </div>
-          </div>
-        ` : '';
+          </div>` : '';
+
+        const snsHtml = [
+          sns.instagram ? `<a class="detail-sns-link" href="https://instagram.com/${sns.instagram.replace('@','')}" target="_blank" rel="noopener">📷 ${esc(sns.instagram)}</a>` : '',
+          sns.x         ? `<a class="detail-sns-link" href="https://x.com/${sns.x.replace('@','')}" target="_blank" rel="noopener">𝕏 ${esc(sns.x)}</a>` : '',
+          sns.line      ? `<a class="detail-sns-link" href="${esc(sns.line)}" target="_blank" rel="noopener">💬 公式LINE</a>` : '',
+          sns.youtube   ? `<a class="detail-sns-link" href="${esc(sns.youtube)}" target="_blank" rel="noopener">▶ YouTube</a>` : '',
+          sns.website   ? `<a class="detail-sns-link" href="${esc(sns.website)}" target="_blank" rel="noopener">🌐 公式サイト</a>` : '',
+        ].filter(Boolean).join('');
 
         document.getElementById('event-detail-content').innerHTML = `
-          <h1 class="detail-title">${escapeHtml(name)}</h1>
-          ${subtitle ? `<p class="detail-subtitle">${escapeHtml(subtitle)}</p>` : ''}
+          <h1 class="detail-title">${esc(name)}</h1>
+          ${subtitle ? `<p class="detail-subtitle">${esc(subtitle)}</p>` : ''}
           <div class="detail-tags">
-            ${university ? `<span class="detail-tag uni">${escapeHtml(university)}</span>` : ''}
-            ${category   ? `<span class="detail-tag cat">${escapeHtml(category)}</span>`   : ''}
-            ${field      ? `<span class="detail-tag field">${escapeHtml(field)}</span>`    : ''}
+            ${university ? `<span class="detail-tag uni" data-filter="university" data-value="${esc(university)}">${esc(university)}</span>` : ''}
+            ${category   ? `<span class="detail-tag cat" data-filter="category"   data-value="${esc(category)}">${esc(category)}</span>` : ''}
+            ${field      ? `<span class="detail-tag field" data-filter="field"    data-value="${esc(field)}">${esc(field)}</span>` : ''}
           </div>
-          ${dateTimeStr ? `
-            <div class="detail-section">
-              <div class="detail-section-label">📅 開催日時</div>
-              <div class="detail-section-value">${escapeHtml(dateTimeStr)}</div>
-            </div>` : ''}
-          ${location ? `
-            <div class="detail-section">
-              <div class="detail-section-label">📍 場所</div>
-              <div class="detail-section-value">${escapeHtml(location)}</div>
-            </div>` : ''}
+          ${dateTimeStr ? `<div class="detail-section"><div class="detail-section-label">📅 開催日時</div><div class="detail-section-value">${esc(dateTimeStr)}</div></div>` : ''}
+          ${location    ? `<div class="detail-section"><div class="detail-section-label">📍 場所</div><div class="detail-section-value">${esc(location)}</div></div>` : ''}
           ${photosHtml}
           <div class="detail-desc">
             <div class="detail-desc-label">📝 詳細説明</div>
-            <div class="detail-desc-text">${escapeHtml(description)}</div>
+            <div class="detail-desc-text">${esc(description)}</div>
+          </div>
+          <div class="detail-sns">
+            <div class="detail-sns-label">📣 公式アカウント</div>
+            <div class="detail-sns-links">
+              ${snsHtml || '<span class="detail-sns-empty">公式アカウント情報はありません</span>'}
+            </div>
           </div>
           <div style="text-align:center;margin-top:8px;">
             <a href="index.html" class="detail-back-btn">← 検索ページに戻る</a>
           </div>
         `;
 
-        // 写真クリックで拡大
+        // タグクリック → その条件で検索ページへ
+        document.querySelectorAll('.detail-tag[data-filter]').forEach(tag => {
+          tag.addEventListener('click', () => {
+            const filter = tag.dataset.filter;
+            const value  = tag.dataset.value;
+            const newF   = { university:'', category:'', field:'', date:'' };
+            newF[filter] = value;
+            localStorage.setItem('searchFilters', JSON.stringify(newF));
+            const map = { university:'uni', category:'cat', field:'field', date:'date' };
+            window.location.href = `index.html?${map[filter]}=${encodeURIComponent(value)}`;
+          });
+        });
+
+        // 写真拡大
         document.querySelectorAll('.detail-photo').forEach(img => {
           img.addEventListener('click', () => {
             document.getElementById('photo-modal-img').src = img.src;
@@ -177,31 +274,46 @@
           });
         });
 
-      } catch(error) {
-        console.error('データ読み込みエラー:', error);
-        document.getElementById('event-detail-content').innerHTML = `
-          <div style="text-align:center;padding:40px;color:#c33;">
-            <h2>エラー</h2><p>データの読み込みに失敗しました。</p>
-            <a href="index.html" style="color:#2563eb;">検索ページに戻る</a>
-          </div>`;
+      } catch(err) {
+        console.error(err);
+        document.getElementById('event-detail-content').innerHTML =
+          '<div style="text-align:center;padding:40px;color:#c33;"><h2>エラー</h2><p>読み込みに失敗しました。</p><a href="index.html" style="color:#2563eb;">戻る</a></div>';
       }
     }
 
-    // 写真モーダルを閉じる
-    document.getElementById('photo-modal-close').addEventListener('click', () => {
-      document.getElementById('photo-modal').style.display = 'none';
+    // 写真モーダル
+    document.getElementById('photo-modal-close').addEventListener('click', () => document.getElementById('photo-modal').style.display = 'none');
+    document.getElementById('photo-modal').addEventListener('click', e => { if (e.target === document.getElementById('photo-modal')) document.getElementById('photo-modal').style.display = 'none'; });
+
+    // シェア
+    const shareModal = document.getElementById('share-modal');
+    document.getElementById('shareBtn').addEventListener('click', () => shareModal.classList.add('open'));
+    document.getElementById('share-cancel').addEventListener('click', () => shareModal.classList.remove('open'));
+    shareModal.addEventListener('click', e => { if (e.target === shareModal) shareModal.classList.remove('open'); });
+    document.getElementById('share-x').addEventListener('click', () => {
+      const title = currentEvent?.name || currentEvent?.["企画名"] || "";
+      window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(title+" #iTLFest2025")}&url=${encodeURIComponent(location.href)}`,'_blank');
+      shareModal.classList.remove('open');
     });
-    document.getElementById('photo-modal').addEventListener('click', e => {
-      if (e.target === document.getElementById('photo-modal')) {
-        document.getElementById('photo-modal').style.display = 'none';
-      }
+    document.getElementById('share-line').addEventListener('click', () => {
+      window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`,'_blank');
+      shareModal.classList.remove('open');
+    });
+    document.getElementById('share-copy').addEventListener('click', () => {
+      navigator.clipboard.writeText(location.href).then(()=>alert('URLをコピーしました！')).catch(()=>prompt('URLをコピーしてください',location.href));
+      shareModal.classList.remove('open');
     });
 
-    function escapeHtml(str) {
+    // 提案
+    const fbModal = document.getElementById('feedback-modal');
+    document.getElementById('feedbackBtn').addEventListener('click', () => fbModal.classList.add('open'));
+    document.getElementById('feedback-close').addEventListener('click', () => fbModal.classList.remove('open'));
+    fbModal.addEventListener('click', e => { if (e.target === fbModal) fbModal.classList.remove('open'); });
+
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function esc(str){
       if (!str && str !== 0) return "";
-      return String(str)
-        .replaceAll("&","&amp;").replaceAll("<","&lt;")
-        .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
+      return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
     }
   </script>
 </body>
