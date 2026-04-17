@@ -171,6 +171,14 @@
 
     <section id="info-area" class="card hidden">
       <h2>ℹ️ 情報 <button class="page-help-btn" data-page="info" aria-label="このページについて">このページについて</button></h2>
+      <!-- ダークモードトグル -->
+      <div class="darkmode-toggle-row">
+        <span class="darkmode-label">🌙 ダークモード</span>
+        <button class="darkmode-toggle" id="darkmodeToggle" aria-label="ダークモード切替">
+          <span class="darkmode-thumb"></span>
+        </button>
+      </div>
+      <hr style="margin:1rem 0 2rem;">
       <div class="info-section">
         <h3>🔗 協力大学 学祭公式サイト</h3>
         <div id="links-list" class="links-list"></div>
@@ -241,10 +249,28 @@
     </button>
   </nav>
 
-  <!-- ハンバーガーボタン（スマホのみ表示） -->
+  <!-- ハンバーガーボタン（スマホのみ表示・右下） -->
   <button class="hamburger-toggle" id="hamburger-toggle" aria-label="メニューを開く">
     <span></span><span></span><span></span>
   </button>
+
+  <!-- 機能提案ボタン（左下固定） -->
+  <button class="feedback-float-btn" id="feedbackFloatBtn">💡</button>
+
+  <!-- 提案モーダル -->
+  <div id="feedbackFloatModal" class="modal hidden">
+    <div class="modal-content" style="max-width:480px;">
+      <button class="modal-close" id="feedbackFloatClose">✕</button>
+      <h3 style="margin:0 0 8px;color:#667eea;">💡 機能の提案・廃止</h3>
+      <p style="color:#6b7280;font-size:0.9rem;margin:0 0 16px;">ご意見・ご要望はSNSまたはLINEからお気軽にどうぞ！</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <a href="https://x.com/Festival_iTL" target="_blank" rel="noopener" class="feedback-link">𝕏 X (Twitter) @Festival_iTL</a>
+        <a href="https://instagram.com/ITLFEST_2025" target="_blank" rel="noopener" class="feedback-link">📷 Instagram @ITLFEST_2026</a>
+        <a href="https://lin.ee/rrxrnLv" target="_blank" rel="noopener" class="feedback-link">💬 公式LINE @513fripz</a>
+      </div>
+      <div class="modal-actions"><button class="btn primary-3d" id="feedbackFloatOk">閉じる</button></div>
+    </div>
+  </div>
 
   <!-- オーバーレイ -->
   <div class="hamburger-overlay" id="hamburger-overlay"></div>
