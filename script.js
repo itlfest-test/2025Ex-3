@@ -103,6 +103,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   try { setupSearchHelp();         } catch(e){ console.warn(e); }
   try { setupChangelog();          } catch(e){ console.warn(e); }
   try { setupPageHelp();           } catch(e){ console.warn(e); }
+  try { setupDarkmode();           } catch(e){ console.warn(e); }
+  try { setupFeedbackBtn();        } catch(e){ console.warn(e); }
 
   if (checkIfFiltersApplied()) onSearch();
   else renderResults(getAllEvents());
@@ -676,6 +678,10 @@ function renderHistory() {
 // ============================
 // 📱 ナビゲーション
 // ============================
+// モーダル開閉ヘルパー（背面スクロール防止）
+function openModal(el)  { el?.classList.remove("hidden"); document.body.classList.add("modal-open"); }
+function closeModal(el) { el?.classList.add("hidden");    document.body.classList.remove("modal-open"); }
+
 function setupNavigation() {
   const allAreaIds = ["search-area","results-area","favorites-area","room-guide-area","story-area","map-area","info-area"];
   const viewMap    = {
@@ -826,15 +832,15 @@ function setupRoomGuide() {
 const PAGE_HELP_TEXT = {
   "search": {
     title: "🔍 企画を探す",
-    text: `こんにちは！iTLFest.2026年度実行委員会と、同じく中央大学国際情報学部のサークルとして技術提供をしたC3です！
-
-本サイトは、複数の学祭で出展する各ブースについて、来場者の皆様に魅力を事前により知っていただき、学祭を楽しんでもらうことを目標に作成しました。
+    text: `本サイトは、複数の学祭で出展する各ブースについて、来場者の皆様に魅力を事前により知っていただき、学祭を楽しんでもらうことを目標に作成しました。
 
 メインのコンテンツは、最初に表示されている「企画を探す」機能です！こちらでは、大学やカテゴリ等を絞って検索できるほか、何も指定せず検索すると企画を一覧で見ることができます！
 
 ここでは文字情報のみですが、下のメニューバーから「ストーリー」を選択すると、各企画担当者による説明を流し見できるようになっています！
 
-また、検索条件については「？」ボタンから説明を確認できます。`
+また、検索条件については「？」ボタンから説明を確認できます。
+
+制作：iTLFest.2026実行委員会・C3`
   },
   "favorites": {
     title: "⭐ お気に入り",
@@ -880,6 +886,43 @@ function setupPageHelp() {
 
   document.getElementById("pageHelpClose")?.addEventListener("click", () => modal?.classList.add("hidden"));
   document.getElementById("pageHelpOk")?.addEventListener("click",    () => modal?.classList.add("hidden"));
+}
+
+// ============================
+// 🌙 ダークモード
+// ============================
+function setupDarkmode() {
+  const toggle = document.getElementById("darkmodeToggle");
+  if (!toggle) return;
+  const saved = localStorage.getItem("theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const isDark = saved ? saved === "dark" : prefersDark;
+  applyTheme(isDark);
+
+  toggle.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") === "dark";
+    applyTheme(!current);
+    localStorage.setItem("theme", !current ? "dark" : "light");
+  });
+}
+
+function applyTheme(dark) {
+  document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  const toggle = document.getElementById("darkmodeToggle");
+  if (toggle) toggle.classList.toggle("on", dark);
+}
+
+// ============================
+// 💡 機能提案ボタン
+// ============================
+function setupFeedbackBtn() {
+  const btn   = document.getElementById("feedbackFloatBtn");
+  const modal = document.getElementById("feedbackFloatModal");
+  if (!btn || !modal) return;
+  btn.addEventListener("click", () => modal.classList.remove("hidden"));
+  document.getElementById("feedbackFloatClose")?.addEventListener("click", () => modal.classList.add("hidden"));
+  document.getElementById("feedbackFloatOk")?.addEventListener("click",    () => modal.classList.add("hidden"));
+  modal.addEventListener("click", e => { if (e.target === modal) modal.classList.add("hidden"); });
 }
 
 // ============================
