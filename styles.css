@@ -6,33 +6,72 @@
 }
 [data-theme="dark"] body{background:#0f172a;color:#e2e8f0;}
 [data-theme="dark"] .card{background:#1e293b;box-shadow:0 6px 14px rgba(0,0,0,0.3);}
+/* タイル企画名・本文 */
 [data-theme="dark"] .result-card{background:#1e293b;color:#e2e8f0;}
-[data-theme="dark"] .result-card h4{color:#e2e8f0;}
+[data-theme="dark"] .result-card h4{color:#f1f5f9;}
+[data-theme="dark"] .result-card .muted{color:#94a3b8;}
+[data-theme="dark"] .result-card .card-meta{color:#94a3b8;border-top-color:#334155;}
+[data-theme="dark"] .university-tag{background:#1e3a5f;color:#93c5fd;}
+[data-theme="dark"] .field-tag{background:#312e81;color:#a5b4fc;}
+/* モーダル */
 [data-theme="dark"] .modal-content{background:#1e293b;color:#e2e8f0;}
 [data-theme="dark"] .modal-content p,[data-theme="dark"] #descText{color:#cbd5e1;}
 [data-theme="dark"] #descTitle{color:#93c5fd;}
+[data-theme="dark"] .modal-close{color:#94a3b8;}
+/* お気に入りテーブル */
 [data-theme="dark"] .fav-table thead tr{background:#273449;}
 [data-theme="dark"] .fav-table th{color:#cbd5e1;border-color:#334155;}
 [data-theme="dark"] .fav-table tbody tr:hover{background:#273449;}
-[data-theme="dark"] .contact-info,[data-theme="dark"] .link-card{background:#273449;border-color:#334155;}
+[data-theme="dark"] .fav-table-link{color:#93c5fd;}
+[data-theme="dark"] .fav-table-date,[data-theme="dark"] .fav-table-time,[data-theme="dark"] .fav-table-uni{color:#94a3b8;}
+/* 情報ページ */
+[data-theme="dark"] .contact-info{background:#273449;border-color:#334155;}
+[data-theme="dark"] .link-card{background:#273449;border-color:#334155;}
+[data-theme="dark"] .link-card-title{color:#f1f5f9;}
+[data-theme="dark"] .link-card-campus{color:#94a3b8;}
+[data-theme="dark"] .link-card-festival{color:#cbd5e1;}
+[data-theme="dark"] .link-card-url{color:#93c5fd;}
+[data-theme="dark"] .sns-link{color:#93c5fd;}
 [data-theme="dark"] .contact-item{background:#1e293b;}
+[data-theme="dark"] .contact-label{color:#cbd5e1;}
+[data-theme="dark"] .contact-value,[data-theme="dark"] .contact-link{color:#93c5fd;}
 [data-theme="dark"] .info-section h3{color:#93c5fd;}
-[data-theme="dark"] .chip-btn{background:#1e293b;border-color:#334155;color:#cbd5e1;}
-[data-theme="dark"] .chip-btn:hover{background:#273449;border-color:#667eea;color:#93c5fd;}
+/* 試作バナー */
 [data-theme="dark"] .notice-banner{background:linear-gradient(135deg,#2d2a1a,#1e1b0a);border-color:#b45309;}
 [data-theme="dark"] .notice-text{color:#fcd34d;}
+[data-theme="dark"] .notice-text strong{color:#fde68a;}
+[data-theme="dark"] .notice-icon{filter:none;}
+/* Chips */
+[data-theme="dark"] .chip-btn{background:#1e293b;border-color:#334155;color:#cbd5e1;}
+[data-theme="dark"] .chip-btn:hover{background:#273449;border-color:#667eea;color:#93c5fd;}
+/* その他 */
 [data-theme="dark"] .campus-info-item{background:#273449;}
 [data-theme="dark"] .changelog-item{color:#cbd5e1;}
+[data-theme="dark"] .changelog-version-date{color:#94a3b8;}
+[data-theme="dark"] .changelog-entry{border-bottom-color:#334155;}
 [data-theme="dark"] .share-cancel,[data-theme="dark"] .share-option{background:#273449;border-color:#334155;color:#e2e8f0;}
 [data-theme="dark"] select.options{background:#1e293b;border-color:#334155;color:#e2e8f0;}
 [data-theme="dark"] .btn{background:#1e293b;color:#e2e8f0;}
 [data-theme="dark"] .btn.ghost{background:transparent;color:#94a3b8;}
 [data-theme="dark"] .hamburger-menu{background:#1e293b;}
-[data-theme="dark"] .hamburger-menu .nav-btn{background:#273449;}
-[data-theme="dark"] .nav-btn{background:linear-gradient(180deg,#1e293b,#273449);}
+[data-theme="dark"] .hamburger-menu .nav-btn{background:#273449;color:#e2e8f0;}
+[data-theme="dark"] .hamburger-menu .nav-btn .nav-label{color:#cbd5e1;}
+[data-theme="dark"] .nav-btn{background:linear-gradient(180deg,#1e293b,#273449);color:#e2e8f0;}
+[data-theme="dark"] .nav-btn .nav-label{color:#94a3b8;}
 [data-theme="dark"] .nav-btn.active{background:linear-gradient(180deg,#1e3a5f,#1e293b);}
 [data-theme="dark"] .filter-title{color:#e2e8f0;}
 [data-theme="dark"] .site-header h1,[data-theme="dark"] h2,[data-theme="dark"] h3{color:#e2e8f0;}
+[data-theme="dark"] .subtitle{color:#94a3b8;}
+[data-theme="dark"] .room-result-card{background:#273449;border-color:#334155;}
+[data-theme="dark"] .room-result-title{color:#93c5fd;}
+[data-theme="dark"] .room-result-desc{color:#cbd5e1;}
+[data-theme="dark"] .room-map-placeholder{background:#1e293b;color:#94a3b8;}
+[data-theme="dark"] .room-guide-fixed{background:#1e3a5f;color:#93c5fd;}
+[data-theme="dark"] .campus-info-label{color:#94a3b8;}
+[data-theme="dark"] .history-item{background:#273449;border-color:#334155;}
+[data-theme="dark"] .page-help-btn{border-color:#667eea;color:#93c5fd;}
+[data-theme="dark"] .campus-info-btn{border-color:#667eea;color:#93c5fd;}
+[data-theme="dark"] .filter-status{color:#94a3b8;}
 
 /* ダークモードトグルスイッチ */
 .darkmode-toggle-row{display:flex;align-items:center;gap:12px;padding:8px 0;}
@@ -215,10 +254,14 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
   pointer-events:none;
 }
 .hamburger-menu.open{transform:translateY(0);pointer-events:auto;}
-.hamburger-menu-inner{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.hamburger-menu-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px;}
+.hamburger-menu-bottom{grid-template-columns:repeat(4,1fr);margin-bottom:0;}
 .hamburger-menu .nav-btn{max-width:none;padding:12px 8px;border-radius:12px;background:linear-gradient(180deg,#f9fbff,#fff);box-shadow:0 2px 8px rgba(9,30,66,0.06);}
-.hamburger-menu .nav-btn .nav-icon{font-size:1.4rem;}
-.hamburger-menu .nav-btn .nav-label{font-size:0.72rem;}
+.hamburger-menu .nav-btn .nav-icon{font-size:1.3rem;}
+.hamburger-menu .nav-btn .nav-label{font-size:0.68rem;}
+.nav-coming-soon{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 8px;border-radius:12px;background:rgba(0,0,0,0.03);border:1.5px dashed #d1d5db;opacity:0.5;}
+.nav-coming-soon .nav-icon{font-size:1.1rem;line-height:1;}
+.nav-coming-soon .nav-label{font-size:0.6rem;color:#9ca3af;white-space:nowrap;}
 
 /* スマホ: ハンバーガー表示、ボトムナビ非表示 */
 @media(max-width:600px){
