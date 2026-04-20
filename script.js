@@ -913,16 +913,99 @@ function applyTheme(dark) {
 }
 
 // ============================
-// 💡 機能提案ボタン
+// 💡 機能提案チャット（AIによる匿名整理）
 // ============================
 function setupFeedbackBtn() {
   const btn   = document.getElementById("feedbackFloatBtn");
   const modal = document.getElementById("feedbackFloatModal");
+  const closeBtn = document.getElementById("feedbackFloatClose");
+  const input = document.getElementById("feedbackInput");
+  const sendBtn = document.getElementById("feedbackSendBtn");
+  const log   = document.getElementById("feedbackChatLog");
   if (!btn || !modal) return;
-  btn.addEventListener("click", () => modal.classList.remove("hidden"));
-  document.getElementById("feedbackFloatClose")?.addEventListener("click", () => modal.classList.add("hidden"));
-  document.getElementById("feedbackFloatOk")?.addEventListener("click",    () => modal.classList.add("hidden"));
+
+  let chatHistory = [];
+  let opened = false;
+
+  btn.addEventListener("click", () => {
+    modal.classList.remove("hidden");
+    if (!opened) {
+      opened = true;
+      addBubble("ai", "こんにちは！提案したい機能や廃止してほしい機能を教えてください。どんな小さなことでも大丈夫です😊");
+    }
+    setTimeout(() => input.focus(), 100);
+  });
+
+  closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
   modal.addEventListener("click", e => { if (e.target === modal) modal.classList.add("hidden"); });
+
+  sendBtn.addEventListener("click", doSend);
+  input.addEventListener("keydown", e => { if (e.key === "Enter" && !e.isComposing) doSend(); });
+
+  async function doSend() {
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    addBubble("user", text);
+    sendBtn.disabled = true;
+    input.disabled = true;
+    addBubble("ai", "...", "thinking");
+
+    chatHistory.push({ role: "user", content: text });
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: `あなたは学祭イベント検索サイトの機能改善チャットボットです。
+ユーザーから機能の提案・廃止要望を匿名で受け付けています。
+以下のルールに従ってください：
+- ユーザーの意見を丁寧に聞き、内容を整理・確認してください
+- 個人情報は一切聞かないでください
+- 会話は日本語で、フレンドリーかつ簡潔に
+- 提案内容が具体的になったら「ご意見を開発チームに届けます！」と伝えてください
+- 返答は3文以内にしてください`,
+          messages: chatHistory
+        })
+      });
+      const data = await res.json();
+      const reply = data.content?.[0]?.text || "ありがとうございます！ご意見を受け付けました。";
+      removeBubble("thinking");
+      addBubble("ai", reply);
+      chatHistory.push({ role: "assistant", content: reply });
+    } catch(e) {
+      removeBubble("thinking");
+      addBubble("ai", "送信中にエラーが発生しました。公式LINEからご連絡ください：https://lin.ee/rrxrnLv");
+    }
+
+    sendBtn.disabled = false;
+    input.disabled = false;
+    input.focus();
+  }
+
+  function addBubble(role, text, id) {
+    const wrap = document.createElement("div");
+    wrap.style.cssText = `display:flex;justify-content:${role==="user"?"flex-end":"flex-start"};`;
+    if (id) wrap.dataset.bubbleId = id;
+    const bubble = document.createElement("div");
+    bubble.style.cssText = `
+      max-width:80%;padding:10px 14px;border-radius:${role==="user"?"18px 18px 4px 18px":"18px 18px 18px 4px"};
+      font-size:0.88rem;line-height:1.6;white-space:pre-wrap;
+      background:${role==="user"?"linear-gradient(135deg,#667eea,#764ba2)":"#f1f5f9"};
+      color:${role==="user"?"#fff":"#374151"};
+    `;
+    bubble.textContent = text;
+    wrap.appendChild(bubble);
+    log.appendChild(wrap);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function removeBubble(id) {
+    log.querySelector(`[data-bubble-id="${id}"]`)?.remove();
+  }
 }
 
 // ============================
