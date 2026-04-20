@@ -95,8 +95,6 @@
   </style>
 </head>
 <body>
-  <!-- 提案ボタン（右上固定） -->
-  <button class="feedback-btn" id="feedbackBtn">💡 機能の提案・廃止</button>
 
   <div class="detail-wrap">
     <div class="detail-topbar">
@@ -124,18 +122,6 @@
         <button class="share-option" id="share-copy"><span class="share-option-icon">📋</span>URLコピー</button>
       </div>
       <button class="share-cancel" id="share-cancel">キャンセル</button>
-    </div>
-  </div>
-
-  <!-- 提案モーダル -->
-  <div id="feedback-modal">
-    <div id="feedback-modal-inner">
-      <button class="feedback-close" id="feedback-close">✕</button>
-      <h3>💡 機能の提案・廃止</h3>
-      <p style="color:#6b7280;font-size:0.9rem;margin:0 0 16px;">ご意見・ご要望はSNSまたはLINEからお気軽にどうぞ！</p>
-      <a class="feedback-link" href="https://x.com/Festival_iTL" target="_blank" rel="noopener">𝕏 X (Twitter) @Festival_iTL</a>
-      <a class="feedback-link" href="https://instagram.com/ITLFEST_2025" target="_blank" rel="noopener">📷 Instagram @ITLFEST_2026</a>
-      <a class="feedback-link" href="https://lin.ee/rrxrnLv" target="_blank" rel="noopener">💬 公式LINE @513fripz</a>
     </div>
   </div>
 
@@ -304,11 +290,7 @@
       shareModal.classList.remove('open');
     });
 
-    // 提案
-    const fbModal = document.getElementById('feedback-modal');
-    document.getElementById('feedbackBtn').addEventListener('click', () => fbModal.classList.add('open'));
-    document.getElementById('feedback-close').addEventListener('click', () => fbModal.classList.remove('open'));
-    fbModal.addEventListener('click', e => { if (e.target === fbModal) fbModal.classList.remove('open'); });
+    // 提案ボタンは index.html 側に移動済み
 
     function pad(n){ return String(n).padStart(2,'0'); }
     function esc(str){
