@@ -174,10 +174,13 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
 
 .results-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-top:12px;}
 .result-card{position:relative;background:white;border-radius:12px;padding:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;border-left:4px solid #e5e7eb;}
+.result-card--colored{background:var(--card-cat-bg, white);}
 .result-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.12);transform:translateY(-2px);}
 .result-card h4{margin:0 2.5rem 0.5rem 0;font-size:1.1rem;color:#333;}
 .result-card .muted{color:#666;font-size:0.9rem;margin:0.5rem 0;line-height:1.5;}
 .result-card .card-meta{margin-top:1rem;padding-top:0.75rem;border-top:1px solid rgba(0,0,0,0.06);font-size:0.85rem;color:#888;line-height:2;}
+/* ダークモード時はカテゴリ背景色を無効化して暗い背景に統一 */
+[data-theme="dark"] .result-card--colored{background:#1e293b !important;}
 .fav-btn{position:absolute;top:0.75rem;right:0.75rem;background:transparent;border:none;font-size:1.5rem;cursor:pointer;padding:0.25rem;line-height:1;transition:all 0.2s ease;filter:grayscale(100%) brightness(0.7);opacity:0.5;touch-action:manipulation;}
 .fav-btn:hover{transform:scale(1.2);filter:grayscale(100%) brightness(0.9);opacity:0.8;}
 .fav-btn.active{filter:grayscale(0%) brightness(1.1);opacity:1;animation:favPulse 0.3s ease;}
