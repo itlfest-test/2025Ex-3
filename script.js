@@ -166,6 +166,8 @@ function updateSlide() {
       const campusName = (f.campus||"").replace("キャンパス","").replace("（","").replace("）","");
       const match = optionsData.universityOptions?.find(o => o.includes(uniName) && o.includes(campusName));
       if (match) {
+        // 全条件をリセットしてからキャンパスだけセット
+        onClear();
         setChipValue("university", match);
         onSearch();
         document.querySelector('.nav-btn[data-view="search"]')?.click();
