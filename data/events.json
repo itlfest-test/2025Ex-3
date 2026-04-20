@@ -81,7 +81,8 @@
     "field": "理工",
     "startDatetime": "2025-11-01T10:00:00",
     "endDatetime": "2025-11-01T17:00:00",
-    "location": "7F701"
+    "location": "7F701",
+    "sns": { "instagram": "c3.ofcl" }
   },
   {
     "id": 108,
@@ -93,7 +94,8 @@
     "field": "理工",
     "startDatetime": "2025-11-02T10:00:00",
     "endDatetime": "2025-11-02T17:00:00",
-    "location": "7F701"
+    "location": "7F701",
+    "sns": { "instagram": "c3.ofcl" }
   },
   {
     "id": 121,
