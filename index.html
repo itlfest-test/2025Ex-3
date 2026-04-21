@@ -50,36 +50,28 @@
         <label class="filter-title">大学
           <button class="info-btn" data-type="university" aria-label="大学の説明">?</button>
         </label>
-        <div class="chip-group" data-field="university">
-          <!-- JSで生成 -->
-        </div>
+        <div class="chip-group" data-field="university"></div>
       </div>
 
       <div class="filter-group">
         <label class="filter-title">カテゴリ
           <button class="info-btn" data-type="category" aria-label="カテゴリの説明">?</button>
         </label>
-        <div class="chip-group" data-field="category">
-          <!-- JSで生成 -->
-        </div>
+        <div class="chip-group" data-field="category"></div>
       </div>
 
       <div class="filter-group">
         <label class="filter-title">分野
           <button class="info-btn" data-type="field" aria-label="分野の説明">?</button>
         </label>
-        <div class="chip-group" data-field="field">
-          <!-- JSで生成 -->
-        </div>
+        <div class="chip-group" data-field="field"></div>
       </div>
 
       <div class="filter-group">
         <label class="filter-title">開催日
           <button class="info-btn" data-type="date" aria-label="開催日の説明">?</button>
         </label>
-        <div class="chip-group" data-field="date">
-          <!-- JSで生成 -->
-        </div>
+        <div class="chip-group" data-field="date"></div>
       </div>
 
       <div style="display:flex;gap:8px;margin-top:12px;">
@@ -166,7 +158,7 @@
       <div class="visitor-guide-section">
         <h3>🧭 ご来場の際のご案内</h3>
         <div class="visitor-guide-list">
-          <a href="#" id="accessibilityGuideLink" class="visitor-guide-item" target="_blank" rel="noopener">
+          <a href="https://itlfest-test.github.io/priorityarea/" id="accessibilityGuideLink" class="visitor-guide-item" target="_blank" rel="noopener">
             <span class="visitor-guide-icon">♿</span>
             <div>
               <div class="visitor-guide-title">車いすスペース・優先席のご案内</div>
@@ -269,23 +261,6 @@
     <span></span><span></span><span></span>
   </button>
 
-  <!-- 機能提案ボタン（左下固定） -->
-  <button class="feedback-float-btn" id="feedbackFloatBtn">💡</button>
-
-  <!-- AIチャット提案モーダル -->
-  <div id="feedbackFloatModal" class="modal hidden">
-    <div class="modal-content" style="max-width:480px;display:flex;flex-direction:column;height:70vh;">
-      <button class="modal-close" id="feedbackFloatClose">✕</button>
-      <h3 style="margin:0 0 4px;color:#667eea;">💡 機能の提案・廃止</h3>
-      <p style="color:#6b7280;font-size:0.82rem;margin:0 0 12px;">匿名で送信されます。AIが内容を整理して開発チームに届けます。</p>
-      <div id="feedbackChatLog" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 0;margin-bottom:12px;min-height:0;"></div>
-      <div style="display:flex;gap:8px;">
-        <input id="feedbackInput" type="text" placeholder="提案・廃止したい機能を入力..." style="flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid #d0d7e1;font-size:0.9rem;outline:none;">
-        <button id="feedbackSendBtn" class="btn primary-3d" style="white-space:nowrap;">送信</button>
-      </div>
-    </div>
-  </div>
-
   <!-- オーバーレイ -->
   <div class="hamburger-overlay" id="hamburger-overlay"></div>
 
@@ -311,7 +286,7 @@
       </button>
     </div>
     <div class="hamburger-menu-inner hamburger-menu-bottom">
-      <!-- 下段2つ -->
+      <!-- 下段 -->
       <button class="nav-btn" data-view="story">
         <span class="nav-icon">📹</span>
         <span class="nav-label">ストーリー</span>
