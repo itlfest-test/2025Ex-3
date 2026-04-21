@@ -71,6 +71,7 @@
 [data-theme="dark"] .history-item{background:#273449;border-color:#334155;}
 [data-theme="dark"] .page-help-btn{border-color:#667eea;color:#93c5fd;}
 [data-theme="dark"] .campus-info-btn{border-color:#667eea;color:#93c5fd;}
+.results-count{font-size:0.85rem;color:var(--muted);font-weight:normal;margin-left:4px;}
 [data-theme="dark"] .filter-status{color:#94a3b8;}
 
 /* ダークモードトグルスイッチ */
