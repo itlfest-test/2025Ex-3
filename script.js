@@ -468,13 +468,16 @@ function updateFilterStatus() {
 async function renderResults(list) {
   const area   = document.getElementById("results");
   const noData = document.getElementById("no-results");
+  const countEl = document.getElementById("results-count");
   if (!area) return;
   area.innerHTML = "";
   if (!Array.isArray(list) || list.length === 0) {
     if (noData) noData.hidden = false;
+    if (countEl) countEl.textContent = "";
     return;
   }
   if (noData) noData.hidden = true;
+  if (countEl) countEl.textContent = `${list.length}件`;
   for (const ev of list) area.appendChild(createEventCard(ev));
 }
 
@@ -559,7 +562,6 @@ function renderFavoritesTable() {
   tbody.innerHTML = "";
   const favs = loadFavoritesArray();
 
-  // 表示対象: 確定済み + pending（グレー表示）
   const displayIds = [...new Set([...favs, ...pendingRemoveFavs])];
 
   if (displayIds.length === 0) {
@@ -569,16 +571,35 @@ function renderFavoritesTable() {
   const weekdays = ["日","月","火","水","木","金","土"];
   const all = getAllEvents();
 
-  displayIds
+  const sorted = displayIds
     .map(id => all.find(x => x.id === id))
     .filter(Boolean)
     .sort((a,b) => {
       const as = evStartDateTime(a), bs = evStartDateTime(b);
       if (!as && !bs) return 0; if (!as) return 1; if (!bs) return -1;
       return new Date(as) - new Date(bs);
-    })
-    .forEach(ev => {
-      const isPending = pendingRemoveFavs.has(ev.id);
+    });
+
+  // 時間重複チェック（pendingでないもの同士）
+  const activeEvents = sorted.filter(ev => !pendingRemoveFavs.has(ev.id) && evStartDateTime(ev));
+  const conflictIds = new Set();
+  for (let i = 0; i < activeEvents.length; i++) {
+    for (let j = i + 1; j < activeEvents.length; j++) {
+      const a = activeEvents[i], b = activeEvents[j];
+      const aStart = new Date(evStartDateTime(a));
+      const aEnd   = evEndDateTime(a) ? new Date(evEndDateTime(a)) : new Date(aStart.getTime() + 60*60*1000);
+      const bStart = new Date(evStartDateTime(b));
+      const bEnd   = evEndDateTime(b) ? new Date(evEndDateTime(b)) : new Date(bStart.getTime() + 60*60*1000);
+      if (aStart < bEnd && aEnd > bStart) {
+        conflictIds.add(a.id);
+        conflictIds.add(b.id);
+      }
+    }
+  }
+
+  sorted.forEach(ev => {
+      const isPending  = pendingRemoveFavs.has(ev.id);
+      const isConflict = conflictIds.has(ev.id) && !isPending;
       const s   = evStartDateTime(ev);
       const e   = evEndDateTime(ev);
       let dateLabel = "—", timeLabel = "—";
@@ -597,23 +618,23 @@ function renderFavoritesTable() {
       }
       const tr = document.createElement("tr");
       if (isPending) tr.style.opacity = "0.4";
+      if (isConflict) tr.style.background = "rgba(239,68,68,0.08)";
       tr.innerHTML = `
         <td class="fav-table-date">${escapeHtml(dateLabel)}</td>
         <td class="fav-table-time" style="white-space:nowrap;">${escapeHtml(timeLabel)}</td>
         <td class="fav-table-name">
           <a href="events_detail.html?id=${ev.id}" class="fav-table-link">${escapeHtml(evTitle(ev))}</a>
           <div class="fav-table-uni">${escapeHtml(evUniversity(ev))}</div>
+          ${isConflict ? '<div style="color:#ef4444;font-size:0.78rem;margin-top:2px;">⚠️ 時間が重複しています</div>' : ''}
         </td>
         <td><button class="fav-btn fav-table-remove ${isPending ? "" : "active"}" type="button" aria-label="解除" style="position:static;">⭐</button></td>
       `;
       tr.querySelector(".fav-table-remove").addEventListener("click", () => {
         if (isPending) {
-          // 取り消し: pending から外して再登録
           pendingRemoveFavs.delete(ev.id);
           const favs2 = loadFavoritesArray();
           if (!favs2.includes(ev.id)) { favs2.unshift(ev.id); saveFavoritesArray(favs2); }
         } else {
-          // 削除: pendingに入れてlocalStorageからは即削除、見た目だけ残す
           pendingRemoveFavs.add(ev.id);
           const favs2 = loadFavoritesArray().filter(x => x !== ev.id);
           saveFavoritesArray(favs2);
