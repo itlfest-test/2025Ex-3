@@ -124,15 +124,24 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI Emoji","Apple Color 
   border-color:transparent;
   box-shadow:0 4px 10px rgba(20,94,168,0.18);
 }
+/* カテゴリChip: 非選択 */
 .chip-btn.chip-colored{
   background:var(--chip-bg,#f3f4f6);
   border-color:var(--chip-border,#d0d7e1);
   color:var(--chip-color,#374151);
 }
+/* カテゴリChip: ホバー → カテゴリ色を少し濃く */
+.chip-btn.chip-colored:hover{
+  background:var(--chip-border,#d0d7e1);
+  border-color:var(--chip-border,#d0d7e1);
+  color:#fff;
+}
+/* カテゴリChip: 選択 → ホバーと同じ色（統一） */
 .chip-btn.chip-colored.active{
   background:var(--chip-border,var(--accent));
   color:#fff;
   border-color:transparent;
+  box-shadow:0 4px 10px rgba(0,0,0,0.12);
 }
 
 /* カード内タグ */
