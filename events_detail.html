@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>イベント詳細 - 学祭イベント検索</title>
+  <!-- OGP（JSで動的に更新） -->
+  <meta name="description" content="学祭イベント検索 - 企画詳細" />
+  <meta property="og:title" content="学祭イベント検索" />
+  <meta property="og:description" content="学祭イベント検索 - 企画詳細" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="学祭イベント検索" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@Festival_iTL" />
   <link rel="stylesheet" href="styles.css">
   <style>
     :root{
@@ -168,6 +177,15 @@
         const sns = event.sns || {};
 
         document.title = `${name} - 学祭イベント検索`;
+
+        // OGP動的更新
+        const ogDesc = `${university}｜${category}｜${dateTimeStr || ""}`.replace(/｜$/, "");
+        document.querySelector('meta[property="og:title"]')?.setAttribute('content', `${name} - 学祭イベント検索`);
+        document.querySelector('meta[property="og:description"]')?.setAttribute('content', ogDesc);
+        document.querySelector('meta[name="description"]')?.setAttribute('content', ogDesc);
+        document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', `${name} - 学祭イベント検索`);
+        document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', ogDesc);
+        document.querySelector('meta[property="og:url"]')?.setAttribute('content', location.href);
 
         // 日時フォーマット
         let dateTimeStr = "";
