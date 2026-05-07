@@ -400,7 +400,10 @@ select.options{width:100%;padding:10px;border-radius:10px;border:1px solid #d0d7
 .visitor-guide-desc{font-size:0.82rem;color:#718096;}
 .visitor-guide-arrow{font-size:1.4rem;color:#667eea;margin-left:auto;flex-shrink:0;}
 [data-theme="dark"] .visitor-guide-item{background:#273449;border-color:#334155;color:#e2e8f0;}
+[data-theme="dark"] .visitor-guide-title{color:#f1f5f9;}
 [data-theme="dark"] .visitor-guide-desc{color:#94a3b8;}
+[data-theme="dark"] .visitor-guide-section h3{color:#93c5fd;}
+[data-theme="dark"] .visitor-guide-arrow{color:#93c5fd;}
 
 /* ストーリー */
 .story-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin-top:8px;}
