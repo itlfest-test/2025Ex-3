@@ -178,15 +178,6 @@
 
         document.title = `${name} - 学祭イベント検索`;
 
-        // OGP動的更新
-        const ogDesc = `${university}｜${category}｜${dateTimeStr || ""}`.replace(/｜$/, "");
-        document.querySelector('meta[property="og:title"]')?.setAttribute('content', `${name} - 学祭イベント検索`);
-        document.querySelector('meta[property="og:description"]')?.setAttribute('content', ogDesc);
-        document.querySelector('meta[name="description"]')?.setAttribute('content', ogDesc);
-        document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', `${name} - 学祭イベント検索`);
-        document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', ogDesc);
-        document.querySelector('meta[property="og:url"]')?.setAttribute('content', location.href);
-
         // 日時フォーマット
         let dateTimeStr = "";
         if (startDt) {
@@ -200,6 +191,15 @@
             }
           } catch(e){ dateTimeStr = startDt; }
         }
+
+        // OGP動的更新
+        const ogDesc = `${university}｜${category}｜${dateTimeStr || ""}`.replace(/｜$/, "");
+        document.querySelector('meta[property="og:title"]')?.setAttribute('content', `${name} - 学祭イベント検索`);
+        document.querySelector('meta[property="og:description"]')?.setAttribute('content', ogDesc);
+        document.querySelector('meta[name="description"]')?.setAttribute('content', ogDesc);
+        document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', `${name} - 学祭イベント検索`);
+        document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', ogDesc);
+        document.querySelector('meta[property="og:url"]')?.setAttribute('content', location.href);
 
         const photosHtml = images.length ? `
           <div class="detail-photos">
