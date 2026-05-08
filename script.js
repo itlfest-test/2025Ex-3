@@ -221,8 +221,8 @@ function setupInfoPage() {
       <p class="contact-message">${escapeHtml(contactData.message||"")}</p>
       ${contactData.email ? `<div class="contact-item"><span class="contact-label">📧 Email</span><span class="contact-value">${escapeHtml(contactData.email)}</span></div>` : ''}
       ${inst ? `<div class="contact-item"><span class="contact-label">📷 Instagram</span><a href="${escapeHtml(inst.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(inst.id)}</a></div>` : ''}
-      ${xSns ? `<div class="contact-item"><span class="contact-label">𝕏 X (Twitter)</span><a href="${escapeHtml(xSns.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(xSns.id)}</a></div>` : ''}
       ${sns.threads ? `<div class="contact-item"><span class="contact-label">🧵 Threads</span><a href="${escapeHtml(sns.threads.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(sns.threads.id)}</a></div>` : ''}
+      ${xSns ? `<div class="contact-item"><span class="contact-label">𝕏 X (Twitter)</span><a href="${escapeHtml(xSns.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(xSns.id)}</a></div>` : ''}
       ${line ? `<div class="contact-item"><span class="contact-label">💬 公式LINE</span><a href="${escapeHtml(line.url)}" target="_blank" rel="noopener" class="contact-link">${escapeHtml(line.id)}</a></div>` : ''}
     `;
   }
